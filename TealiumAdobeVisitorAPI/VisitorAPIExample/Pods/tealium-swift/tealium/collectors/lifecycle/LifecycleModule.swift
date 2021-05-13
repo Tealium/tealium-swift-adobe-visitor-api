@@ -90,7 +90,9 @@ public class LifecycleModule: Collector {
         guard var lifecycle = self.lifecycle else {
             return
         }
-
+        if type != .launch {
+            lifecycleData[LifecycleKey.didDetectCrash] = nil
+        }
         switch type {
         case .launch:
             if enabledPrior == true { return }
@@ -155,6 +157,10 @@ public class LifecycleModule: Collector {
         }
         let dispatch = TealiumEvent(title, dataLayer: data)
         delegate?.requestTrack(dispatch.trackRequest)
+    }
+    
+    deinit {
+        Tealium.lifecycleListeners.removeAll()
     }
 }
 

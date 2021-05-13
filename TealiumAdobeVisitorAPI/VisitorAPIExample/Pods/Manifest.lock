@@ -1,14 +1,14 @@
 PODS:
-  - tealium-swift (2.2.0):
-    - tealium-swift/TealiumFull (= 2.2.0)
-  - tealium-swift/Core (2.2.0)
-  - tealium-swift/TealiumFull (2.2.0)
+  - tealium-swift (2.3.0):
+    - tealium-swift/TealiumFull (= 2.3.0)
+  - tealium-swift/Core (2.3.0)
+  - tealium-swift/TealiumFull (2.3.0)
   - TealiumAdobeVisitorAPI (1.0.0):
     - tealium-swift/Core (~> 2.1)
 
 DEPENDENCIES:
-  - tealium-swift
-  - TealiumAdobeVisitorAPI (from `../`)
+  - tealium-swift (= 2.3.0)
+  - TealiumAdobeVisitorAPI (from `../../`)
 
 SPEC REPOS:
   trunk:
@@ -16,12 +16,12 @@ SPEC REPOS:
 
 EXTERNAL SOURCES:
   TealiumAdobeVisitorAPI:
-    :path: "../"
+    :path: "../../"
 
 SPEC CHECKSUMS:
-  tealium-swift: d8e170afa207fb50e1d94ddca5269a2fb2aff2ed
-  TealiumAdobeVisitorAPI: 5db4042e6044034c4cab9847772b427f99f2d360
+  tealium-swift: 0ac0619ba94316f3e943751e50157d7bb996b462
+  TealiumAdobeVisitorAPI: e85ccdca1190fd8289ea9151c18e7956fa0b6a78
 
-PODFILE CHECKSUM: d7b21eb99d3868c53d95b2051f4d4e517fdb1917
+PODFILE CHECKSUM: 24cea7364190dc8376321d870089ce18396d62fe
 
-COCOAPODS: 1.10.0
+COCOAPODS: 1.10.1

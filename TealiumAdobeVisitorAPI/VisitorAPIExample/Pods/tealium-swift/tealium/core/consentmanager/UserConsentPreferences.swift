@@ -9,8 +9,9 @@ import Foundation
 
 public struct UserConsentPreferences: Equatable, Codable {
 
-    var consentCategories: [TealiumConsentCategories]?
-    var consentStatus: TealiumConsentStatus
+    public var consentCategories: [TealiumConsentCategories]?
+    public var consentStatus: TealiumConsentStatus
+    var lastUpdate: Date?
 
     /// Initializes preferences￼.
     ///
@@ -100,4 +101,5 @@ public struct UserConsentPreferences: Equatable, Codable {
     public mutating func resetConsentCategories() {
         self.consentCategories = nil
     }
+    
 }

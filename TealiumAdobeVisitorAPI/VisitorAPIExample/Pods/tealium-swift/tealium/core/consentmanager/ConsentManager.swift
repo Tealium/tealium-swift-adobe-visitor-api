@@ -17,6 +17,7 @@ public class ConsentManager {
     }
     var diskStorage: TealiumDiskStorageProtocol?
     var currentPolicy: ConsentPolicy
+    public var onConsentExpiraiton: (() -> Void)?
 
     /// Returns current consent status
     public var userConsentStatus: TealiumConsentStatus {
@@ -49,6 +50,18 @@ public class ConsentManager {
     var trackingStatus: TealiumConsentTrackAction {
         currentPolicy.trackAction
     }
+    
+    /// Used by the Consent Manager module to determine if the consent selections are expired
+    var lastConsentUpdate: Date? {
+        get {
+            currentPolicy.preferences.lastUpdate
+        }
+        set {
+            if let newValue = newValue {
+                currentPolicy.preferences.lastUpdate = newValue
+            }
+        }
+    }
 
     /// Initialize consent manager￼.
     ///
@@ -62,9 +75,11 @@ public class ConsentManager {
                 diskStorage: TealiumDiskStorageProtocol,
                 dataLayer: DataLayerManagerProtocol?) {
         self.diskStorage = diskStorage
-        consentPreferencesStorage = ConsentPreferencesStorage(diskStorage: diskStorage)
         self.config = config
         self.delegate = delegate
+        self.onConsentExpiraiton = config.onConsentExpiration
+        consentPreferencesStorage = ConsentPreferencesStorage(diskStorage: diskStorage)
+        
         // try to load config from persistent storage first
         if let dataLayer = dataLayer,
            let migratedConsentStatus = dataLayer.all[ConsentKey.consentStatus] as? Int,
@@ -77,13 +92,8 @@ public class ConsentManager {
         }
 
         let preferences = consentPreferencesStorage?.preferences ?? UserConsentPreferences(consentStatus: .unknown, consentCategories: nil)
-
-        switch config.consentPolicy ?? .gdpr {
-        case .ccpa:
-            self.currentPolicy = CCPAConsentPolicy(preferences)
-        case .gdpr:
-            self.currentPolicy = GDPRConsentPolicy(preferences)
-        }
+        
+        self.currentPolicy = ConsentPolicyFactory.create(config.consentPolicy ?? .gdpr, preferences: preferences)
 
         if preferences.consentStatus != .unknown {
             // always need to update the consent cookie in TiQ, so this will trigger update_consent_cookie
@@ -100,7 +110,7 @@ public class ConsentManager {
             // this track call must only be sent if "Log Consent Changes" is enabled and user has consented
             if consentLoggingEnabled, currentPolicy.shouldLogConsentStatus {
                 // call type must be set to override "link" or "view"
-                consentData[TealiumKey.callType] = consentData[TealiumKey.event]
+                consentData[TealiumKey.eventType] = consentData[TealiumKey.event]
                 delegate?.requestTrack(TealiumTrackRequest(data: consentData))
             }
             // in all cases, update the cookie data in TiQ/webview
@@ -119,7 +129,7 @@ public class ConsentManager {
             }
             // collect module ignores this hit
             consentData[TealiumKey.event] = currentPolicy.updateConsentCookieEventName
-            consentData[TealiumKey.callType] = currentPolicy.updateConsentCookieEventName
+            consentData[TealiumKey.eventType] = currentPolicy.updateConsentCookieEventName
             delegate?.requestTrack(TealiumTrackRequest(data: consentData))
         }
     }
@@ -143,6 +153,7 @@ public class ConsentManager {
         if let categories = categories {
             currentPolicy.preferences.setConsentCategories(categories)
         }
+        lastConsentUpdate = Date()
         storeUserConsentPreferences(currentPolicy.preferences)
         trackUserConsentPreferences(currentPolicy.preferences)
     }
