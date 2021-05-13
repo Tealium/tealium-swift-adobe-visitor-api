@@ -1,0 +1,421 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 51;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		851CCA9C5F16203AFA41BD87 /* Pods_VisitorAPIExample.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5FC38DC04E6CB0948C5275C9 /* Pods_VisitorAPIExample.framework */; };
+		D709E3E925CAEB5B003FBE61 /* TealiumHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = D709E3E825CAEB5B003FBE61 /* TealiumHelper.swift */; };
+		D7E5098525C96B4700C7F758 /* VisitorAPIExampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7E5098425C96B4700C7F758 /* VisitorAPIExampleApp.swift */; };
+		D7E5098725C96B4700C7F758 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7E5098625C96B4700C7F758 /* ContentView.swift */; };
+		D7E5098925C96B4A00C7F758 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D7E5098825C96B4A00C7F758 /* Assets.xcassets */; };
+		D7E5098C25C96B4A00C7F758 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D7E5098B25C96B4A00C7F758 /* Preview Assets.xcassets */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		D7A3ECAE25C972BB0007DFB4 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		5FC38DC04E6CB0948C5275C9 /* Pods_VisitorAPIExample.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_VisitorAPIExample.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		657BB8725D3D70EBA71D802C /* Pods-VisitorAPIExample.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VisitorAPIExample.debug.xcconfig"; path = "Target Support Files/Pods-VisitorAPIExample/Pods-VisitorAPIExample.debug.xcconfig"; sourceTree = "<group>"; };
+		D709E3E825CAEB5B003FBE61 /* TealiumHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TealiumHelper.swift; sourceTree = "<group>"; };
+		D7E5098125C96B4700C7F758 /* VisitorAPIExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VisitorAPIExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		D7E5098425C96B4700C7F758 /* VisitorAPIExampleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisitorAPIExampleApp.swift; sourceTree = "<group>"; };
+		D7E5098625C96B4700C7F758 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		D7E5098825C96B4A00C7F758 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		D7E5098B25C96B4A00C7F758 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		D7E5098D25C96B4A00C7F758 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		FE8CDAA8313E5527EFADC97B /* Pods-VisitorAPIExample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VisitorAPIExample.release.xcconfig"; path = "Target Support Files/Pods-VisitorAPIExample/Pods-VisitorAPIExample.release.xcconfig"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		D7E5097E25C96B4700C7F758 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				851CCA9C5F16203AFA41BD87 /* Pods_VisitorAPIExample.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		3CBE19A7721A4623E9B22937 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				657BB8725D3D70EBA71D802C /* Pods-VisitorAPIExample.debug.xcconfig */,
+				FE8CDAA8313E5527EFADC97B /* Pods-VisitorAPIExample.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
+		D7E5097825C96B4700C7F758 = {
+			isa = PBXGroup;
+			children = (
+				D7E5098325C96B4700C7F758 /* VisitorAPIExample */,
+				D7E5098225C96B4700C7F758 /* Products */,
+				D7E509A725C96FCE00C7F758 /* Frameworks */,
+				3CBE19A7721A4623E9B22937 /* Pods */,
+			);
+			sourceTree = "<group>";
+		};
+		D7E5098225C96B4700C7F758 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				D7E5098125C96B4700C7F758 /* VisitorAPIExample.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		D7E5098325C96B4700C7F758 /* VisitorAPIExample */ = {
+			isa = PBXGroup;
+			children = (
+				D7E5098425C96B4700C7F758 /* VisitorAPIExampleApp.swift */,
+				D7E5098625C96B4700C7F758 /* ContentView.swift */,
+				D7E5098825C96B4A00C7F758 /* Assets.xcassets */,
+				D7E5098D25C96B4A00C7F758 /* Info.plist */,
+				D7E5098A25C96B4A00C7F758 /* Preview Content */,
+				D709E3E825CAEB5B003FBE61 /* TealiumHelper.swift */,
+			);
+			path = VisitorAPIExample;
+			sourceTree = "<group>";
+		};
+		D7E5098A25C96B4A00C7F758 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				D7E5098B25C96B4A00C7F758 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		D7E509A725C96FCE00C7F758 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				5FC38DC04E6CB0948C5275C9 /* Pods_VisitorAPIExample.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		D7E5098025C96B4700C7F758 /* VisitorAPIExample */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D7E5099025C96B4A00C7F758 /* Build configuration list for PBXNativeTarget "VisitorAPIExample" */;
+			buildPhases = (
+				C45E20AE40AF011780995292 /* [CP] Check Pods Manifest.lock */,
+				D7E5097D25C96B4700C7F758 /* Sources */,
+				D7E5097E25C96B4700C7F758 /* Frameworks */,
+				D7E5097F25C96B4700C7F758 /* Resources */,
+				D7A3ECAE25C972BB0007DFB4 /* Embed Frameworks */,
+				DAD2F940B2B952B4EBBB92E5 /* [CP] Embed Pods Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = VisitorAPIExample;
+			productName = VisitorAPIExample;
+			productReference = D7E5098125C96B4700C7F758 /* VisitorAPIExample.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		D7E5097925C96B4700C7F758 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1240;
+				LastUpgradeCheck = 1240;
+				TargetAttributes = {
+					D7E5098025C96B4700C7F758 = {
+						CreatedOnToolsVersion = 12.4;
+					};
+				};
+			};
+			buildConfigurationList = D7E5097C25C96B4700C7F758 /* Build configuration list for PBXProject "VisitorAPIExample" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = D7E5097825C96B4700C7F758;
+			productRefGroup = D7E5098225C96B4700C7F758 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				D7E5098025C96B4700C7F758 /* VisitorAPIExample */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		D7E5097F25C96B4700C7F758 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D7E5098C25C96B4A00C7F758 /* Preview Assets.xcassets in Resources */,
+				D7E5098925C96B4A00C7F758 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		C45E20AE40AF011780995292 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-VisitorAPIExample-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		DAD2F940B2B952B4EBBB92E5 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-VisitorAPIExample/Pods-VisitorAPIExample-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-VisitorAPIExample/Pods-VisitorAPIExample-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-VisitorAPIExample/Pods-VisitorAPIExample-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		D7E5097D25C96B4700C7F758 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D7E5098725C96B4700C7F758 /* ContentView.swift in Sources */,
+				D709E3E925CAEB5B003FBE61 /* TealiumHelper.swift in Sources */,
+				D7E5098525C96B4700C7F758 /* VisitorAPIExampleApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		D7E5098E25C96B4A00C7F758 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		D7E5098F25C96B4A00C7F758 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		D7E5099125C96B4A00C7F758 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 657BB8725D3D70EBA71D802C /* Pods-VisitorAPIExample.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_ASSET_PATHS = "\"VisitorAPIExample/Preview Content\"";
+				DEVELOPMENT_TEAM = XC939GDC9P;
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = VisitorAPIExample/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.tealium.VisitorAPIExample;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		D7E5099225C96B4A00C7F758 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = FE8CDAA8313E5527EFADC97B /* Pods-VisitorAPIExample.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_ASSET_PATHS = "\"VisitorAPIExample/Preview Content\"";
+				DEVELOPMENT_TEAM = XC939GDC9P;
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = VisitorAPIExample/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.tealium.VisitorAPIExample;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		D7E5097C25C96B4700C7F758 /* Build configuration list for PBXProject "VisitorAPIExample" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D7E5098E25C96B4A00C7F758 /* Debug */,
+				D7E5098F25C96B4A00C7F758 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D7E5099025C96B4A00C7F758 /* Build configuration list for PBXNativeTarget "VisitorAPIExample" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D7E5099125C96B4A00C7F758 /* Debug */,
+				D7E5099225C96B4A00C7F758 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = D7E5097925C96B4700C7F758 /* Project object */;
+}
