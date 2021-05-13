@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Bucket
+   uuid = "3C32FD0F-5AE5-48FF-AE36-8F77EE2874CA"
+   type = "1"
+   version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "56887331-636E-49F2-9778-F667D04B1E79"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "TealiumAdobeVisitorAPITests/AdobeVisitorModuleTests.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "609"
+            endingLineNumber = "609"
+            landmarkName = "getNewECIDAndLink(customVisitorId:dataProviderId:authState:completion:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "69B49009-CEB7-489A-B667-7C084080C6EF"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "TealiumAdobeVisitorAPITests/AdobeVisitorModuleTests.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "204"
+            endingLineNumber = "204"
+            landmarkName = "testGetAndLinkRetriesOnFailure()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "930B9AF3-ECCA-4386-BF24-D369EA112C28"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "TealiumAdobeVisitorAPI/AdobeVisitorModule.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "66"
+            endingLineNumber = "66"
+            landmarkName = "init(context:delegate:diskStorage:retryManager:adobeVisitorAPI:completion:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "931E3E10-7F79-40B9-85FF-B55BD172E017"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "TealiumAdobeVisitorAPITests/AdobeVisitorModuleTests.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "210"
+            endingLineNumber = "210"
+            landmarkName = "testGetAndLinkRetriesOnFailure()"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "931E3E10-7F79-40B9-85FF-B55BD172E017 - b4f0bfbd15482ba"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "TealiumAdobeVisitorAPITests.AdobeVisitorModuleTests.testGetAndLinkRetriesOnFailure() -&gt; ()"
+                  moduleName = "TealiumAdobeVisitorAPITests"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/craigrouse/mobiledev/swift-library/tealium-swift-adobe-visitor-api/TealiumAdobeVisitorAPI/TealiumAdobeVisitorAPITests/AdobeVisitorModuleTests.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "210"
+                  endingLineNumber = "210"
+                  offsetFromSymbolStart = "701">
+               </Location>
+               <Location
+                  uuid = "931E3E10-7F79-40B9-85FF-B55BD172E017 - 596bab82774d7658"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Result&lt;Swift.Bool, Swift.Error&gt;, Swift.Optional&lt;Swift.Dictionary&lt;Swift.String, Any&gt;&gt;) -&gt; () in TealiumAdobeVisitorAPITests.AdobeVisitorModuleTests.testGetAndLinkRetriesOnFailure() -&gt; ()"
+                  moduleName = "TealiumAdobeVisitorAPITests"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/craigrouse/mobiledev/swift-library/tealium-swift-adobe-visitor-api/TealiumAdobeVisitorAPI/TealiumAdobeVisitorAPITests/AdobeVisitorModuleTests.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "210"
+                  endingLineNumber = "210"
+                  offsetFromSymbolStart = "4">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
+</Bucket>
