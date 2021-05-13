@@ -7,7 +7,7 @@
 
 import Foundation
 
-public typealias NetworkResult = Result<(URLResponse, Data), Error>
+typealias NetworkResult = Result<(URLResponse, Data), Error>
 
 extension URLSession: NetworkSession {
     func loadData(from request: URLRequest,
