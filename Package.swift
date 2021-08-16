@@ -8,7 +8,7 @@ let package = Package(
     products: [
         .library(
             name: "TealiumAdobeVisitorAPI",
-            type: .dynamic,
+            type: .static,
             targets: ["TealiumAdobeVisitorAPI"]),
     ],
     dependencies: [
