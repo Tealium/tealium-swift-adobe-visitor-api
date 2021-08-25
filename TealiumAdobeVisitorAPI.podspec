@@ -28,8 +28,8 @@ Pod::Spec.new do |s|
     s.pod_target_xcconfig = { 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64' }    
 
     # ――― Source Location ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
-    # s.source       = { :git => "https://github.com/Tealium/tealium-ios-adobe-visitor-api.git", :tag => "#{s.version}" }
-    s.source = { :git => "https://github.com/Tealium/tealium-ios-adobe-visitor-api.git", :branch => "main"}
+    s.source       = { :git => "https://github.com/Tealium/tealium-ios-adobe-visitor-api.git", :tag => "#{s.version}" }
+    # s.source = { :git => "https://github.com/Tealium/tealium-ios-adobe-visitor-api.git", :branch => "main"}
 
     # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
     s.ios.source_files      = "TealiumAdobeVisitorAPI/TealiumAdobeVisitorAPI/*.{swift}"

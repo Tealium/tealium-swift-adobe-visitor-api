@@ -26,7 +26,7 @@
   },
   "source": {
     "git": "https://github.com/Tealium/tealium-ios-adobe-visitor-api.git",
-    "tag": "1.0.0"
+    "branch": "main"
   },
   "ios": {
     "source_files": "TealiumAdobeVisitorAPI/TealiumAdobeVisitorAPI/*.{swift}",

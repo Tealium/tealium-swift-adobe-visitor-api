@@ -6,7 +6,7 @@
 //
 import Foundation
 
-protocol TealiumPublishSettingsDelegate: class {
+protocol TealiumPublishSettingsDelegate: AnyObject {
     func didUpdate(_ publishSettings: RemotePublishSettings)
 }
 
@@ -129,5 +129,9 @@ class TealiumPublishSettingsRetriever {
         }
 
         return try? JSONDecoder().decode(RemotePublishSettings.self, from: data)
+    }
+    
+    deinit {
+        urlSession?.finishTealiumTasksAndInvalidate()
     }
 }
