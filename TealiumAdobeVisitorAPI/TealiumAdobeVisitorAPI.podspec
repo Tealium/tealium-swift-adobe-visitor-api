@@ -29,10 +29,9 @@ Pod::Spec.new do |s|
 
     # ――― Source Location ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
     s.source       = { :git => "https://github.com/Tealium/tealium-ios-adobe-visitor-api.git", :tag => "#{s.version}" }
-    # s.source = { :git => "https://github.com/Tealium/tealium-ios-adobe-visitor-api.git", :branch => "main"}
 
     # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
-    s.ios.source_files      = "TealiumAdobeVisitorAPI/TealiumAdobeVisitorAPI/*.{swift}"
+    s.ios.source_files      = "TealiumAdobeVisitorAPI/*.{swift}"
 
     # ――― Dependencies ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
     s.ios.dependency 'tealium-swift/Core', '~> 2.1'

@@ -6,7 +6,7 @@ target 'VisitorAPIExample' do
   use_frameworks!
 
   # Pods for VisitorAPIExample
-pod 'tealium-swift', '2.3.0'
+pod 'tealium-swift'
 pod 'TealiumAdobeVisitorAPI', :path => '../../'
 
 end
