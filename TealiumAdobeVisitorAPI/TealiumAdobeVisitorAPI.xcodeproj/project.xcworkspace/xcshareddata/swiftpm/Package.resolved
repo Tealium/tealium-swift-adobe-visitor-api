@@ -2,7 +2,7 @@
   "object": {
     "pins": [
       {
-        "package": "TealiumSwift",
+        "package": "tealium-swift",
         "repositoryURL": "https://github.com/Tealium/tealium-swift.git",
         "state": {
           "branch": null,
