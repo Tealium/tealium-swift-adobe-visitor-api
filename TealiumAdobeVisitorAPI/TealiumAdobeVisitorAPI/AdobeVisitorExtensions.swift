@@ -12,6 +12,11 @@ import TealiumSwift
 import TealiumCore
 #endif
 
+
+extension TealiumDataKey {
+    public static let adobeEcid = "adobe_ecid"
+}
+
 public extension Collectors {
     static let AdobeVisitor = TealiumAdobeVisitorModule.self
 }
@@ -21,14 +26,15 @@ public extension Tealium {
     class AdobeVisitorWrapper {
         private unowned var tealium: Tealium
         
+        private var module: TealiumAdobeVisitorModule? {
+            (tealium.zz_internal_modulesManager?.modules.first {
+                $0 is TealiumAdobeVisitorModule
+            }) as? TealiumAdobeVisitorModule
+        }
+        
         /// Returns the full Adobe Visitor object
         public var visitor: AdobeVisitor? {
-            guard let module = (tealium.zz_internal_modulesManager?.modules.first {
-                $0 is TealiumAdobeVisitorModule
-            }) as? TealiumAdobeVisitorModule else {
-                return nil
-            }
-            return module.visitor
+            return module?.visitor
         }
         
         /// Links a known visitor ID to an ECID
@@ -41,12 +47,20 @@ public extension Tealium {
                                               adobeDataProviderId: String,
                                               authState: AdobeVisitorAuthState? = nil,
                                               completion: AdobeVisitorCompletion? = nil) {
-            guard let module = (tealium.zz_internal_modulesManager?.modules.first {
-                $0 is TealiumAdobeVisitorModule
-            }) as? TealiumAdobeVisitorModule else {
+            guard let module = module else {
                 return
             }
-            module.linkECIDToKnownIdentifier(knownId, dataProviderId: adobeDataProviderId, authState: authState, completion: completion)
+            if let visitor = module.visitor {
+                module.linkECIDToKnownIdentifier(knownId,
+                                                 dataProviderId: adobeDataProviderId,
+                                                 authState: authState,
+                                                 visitor: visitor,
+                                                 completion: completion)
+            } else {
+                module.getAndLink(knownId,
+                                  adobeDataProviderId: adobeDataProviderId,
+                                  authState: authState)
+            }
         }
         
         /// Resets the Adobe Experience Cloud ID. A new ID will be requested immediately
@@ -54,12 +68,7 @@ public extension Tealium {
         ///    - completion: `AdobeVisitorCompletion` Optional completion block to be called when a response has been received from the Adobe Visitor API
         ///         - result: `Result<AdobeVisitor, Error>` Result type to receive a valid Adobe Visitor or an error
         public func resetVisitor(completion: AdobeVisitorCompletion? = nil) {
-            guard let module = (tealium.zz_internal_modulesManager?.modules.first {
-                $0 is TealiumAdobeVisitorModule
-            }) as? TealiumAdobeVisitorModule else {
-                return
-            }
-            module.resetECID()
+            module?.resetECID()
         }
 
         

@@ -14,16 +14,17 @@ import TealiumCore
 
 public class TealiumAdobeVisitorModule: Collector {
 
-    public var id = "TealiumAdobeVisitorModule"
+    public let id = "TealiumAdobeVisitorModule"
 
     public var config: TealiumConfig
-
+    let context: TealiumContext
     var diskStorage: TealiumDiskStorageProtocol?
+    let visitorAPI: AdobeExperienceCloudIDService?
 
     public var data: [String: Any]? {
         get {
             if let ecID = visitor?.experienceCloudID {
-                return [TealiumAdobeVisitorConstants.adobeEcid: ecID]
+                return [TealiumDataKey.adobeEcid: ecID]
             } else {
                 return nil
             }
@@ -32,16 +33,16 @@ public class TealiumAdobeVisitorModule: Collector {
 
     public var visitor: AdobeVisitor? {
         willSet {
-            if newValue == nil {
-                diskStorage?.delete(completion: nil)
-            } else if newValue?.isEmpty == false {
+            visitorAPI?.visitor = newValue
+            if let newValue = newValue {
                 diskStorage?.save(newValue, completion: nil)
                 delegate?.requestDequeue(reason: AdobeVisitorModuleConstants.successMessage)
+            } else {
+                diskStorage?.delete(completion: nil)
             }
         }
     }
 
-    var visitorAPI: AdobeExperienceCloudIDService?
 
     var error: Error? {
         willSet {
@@ -50,7 +51,6 @@ public class TealiumAdobeVisitorModule: Collector {
     }
 
     var delegate: ModuleDelegate?
-    var retryManager: Retryable
 
     public required convenience init(context: TealiumContext, delegate: ModuleDelegate?, diskStorage: TealiumDiskStorageProtocol?, completion: ((Result<Bool, Error>, [String: Any]?)) -> Void) {
         self.init(context: context, delegate: delegate, diskStorage: diskStorage, adobeVisitorAPI: nil, completion: completion)
@@ -59,46 +59,53 @@ public class TealiumAdobeVisitorModule: Collector {
     init(context: TealiumContext,
          delegate: ModuleDelegate?,
          diskStorage: TealiumDiskStorageProtocol?,
-         retryManager: Retryable? = nil,
          adobeVisitorAPI: AdobeExperienceCloudIDService? = nil,
          completion: ((Result<Bool, Error>, [String: Any]?)) -> Void) {
 
-        self.retryManager = retryManager ?? RetryManager(queue: TealiumQueues.backgroundSerialQueue, delay: Double.random(in: 10.0...30.0))
+        self.context = context
         self.config = context.config
         self.delegate = delegate
         guard let orgId = config.adobeVisitorOrgId else {
+            visitorAPI = nil
             completion((.failure(AdobeVisitorError.missingOrgID), [AdobeVisitorModuleKeys.error: AdobeVisitorModuleConstants.missingOrgId]))
             return
         }
         self.diskStorage = diskStorage ?? TealiumDiskStorage(config: config, forModule: self.id)
-        visitorAPI = adobeVisitorAPI ?? AdobeVisitorAPI(adobeOrgId: orgId, enableCookies: false)
-        if let existingId = config.adobeVisitorExistingEcid {
-            self.visitor = AdobeVisitor(experienceCloudID: existingId, idSyncTTL: nil, dcsRegion: nil, blob: nil, nextRefresh: nil)
-            self.visitorAPI?.visitor = visitor
-            refreshECID(visitor: visitor)
+        self.visitorAPI = adobeVisitorAPI ?? AdobeVisitorAPI(retryManager: RetryManager(queue: TealiumQueues.backgroundSerialQueue,
+                                                                                        delay: Double.random(in: 10.0...30.0),
+                                                                                        maxRetries: config.adobeVisitorRetries),
+                                                             adobeOrgId: orgId,
+                                                             enableCookies: false)
+        initializeECID()
+    }
+    
+    // Needs to be called out of init method to trigger willSet
+    private func initializeECID() {
+        var localVisitor = getECIDFromDisk()
+        if let existingId = config.adobeVisitorExistingEcid, localVisitor?.experienceCloudID != existingId {
+            localVisitor = AdobeVisitor(experienceCloudID: existingId)
         }
-        if let ecID = getECIDFromDisk() {
-            self.visitor = ecID
-            self.visitorAPI?.visitor = visitor
-            if let adobeCustomVisitorId = config.adobeVisitorCustomVisitorId, let dataProviderId = config.adobeVisitorDataProviderId {
-                linkECIDToKnownIdentifier(adobeCustomVisitorId, dataProviderId: dataProviderId, authState: config.adobeVisitorAuthState)
+        if let localVisitor = localVisitor {
+            self.visitor = localVisitor
+            if let adobeCustomVisitorId = config.adobeVisitorCustomVisitorId,
+                let dataProviderId = config.adobeVisitorDataProviderId {
+                linkECIDToKnownIdentifier(adobeCustomVisitorId,
+                                          dataProviderId: dataProviderId,
+                                          authState: config.adobeVisitorAuthState,
+                                          visitor: localVisitor)
+            } else if localVisitor.shouldRefresh() {
+                refreshECID(visitor: localVisitor)
             }
         } else {
-            if let adobeCustomVisitorId = config.adobeVisitorCustomVisitorId, let dataProviderId = config.adobeVisitorDataProviderId {
-                getAndLink(customVisitorId: adobeCustomVisitorId, dataProviderId: dataProviderId, authState: config.adobeVisitorAuthState)
-            } else {
-                getECID()
-            }
+            getAndLink(config.adobeVisitorCustomVisitorId,
+                       adobeDataProviderId: config.adobeVisitorDataProviderId,
+                       authState: config.adobeVisitorAuthState)
         }
     }
 
     /// - Returns: Optional `AdobeVisitor` instance
     func getECIDFromDisk() -> AdobeVisitor? {
-        if let ecID = diskStorage?.retrieve(as: AdobeVisitor.self), !ecID.isEmpty {
-            delegate?.requestDequeue(reason: AdobeVisitorModuleConstants.successMessage)
-            if let nextRefresh = ecID.nextRefresh, Date() >= nextRefresh || ecID.nextRefresh == nil {
-                refreshECID(visitor: ecID)
-            }
+        if let ecID = diskStorage?.retrieve(as: AdobeVisitor.self) {
             return ecID
         }
         return nil
@@ -106,28 +113,36 @@ public class TealiumAdobeVisitorModule: Collector {
 
     /// Retrieves a new ECID from the Adobe Visitor API
     /// - Parameters:
-    ///    - retries: `Int` Current number of retries
     ///    - completion: `AdobeVisitorCompletion` Optional completion block to be called when a response has been received from the Adobe Visitor API
     ///     - result: `Result<AdobeVisitor, Error>` Result type to receive a valid Adobe Visitor or an error
-    func getECID(retries: Int = 0,
-                 completion: AdobeVisitorCompletion? = nil) {
-        guard let visitorAPI = visitorAPI else {
-            return
+    func getECID(completion: AdobeVisitorCompletion? = nil) {
+        visitorAPI?.getNewECID { result in
+            self.completeCall(result: result)
+            completion?(result)
         }
-        visitorAPI.getNewECID { result in
+    }
+
+    /// Links a known visitor ID to an ECID
+    /// - Parameters:
+    ///     - customVisitorId: `String` containing the custom visitor ID (e.g. email address or other known visitor ID)
+    ///     - dataProviderId: `String` containing the data provider ID for this user identifier
+    ///     - authState: `AdobeVisitorAuthState?` the visitor's current authentication state
+    func getAndLink(_ knownId: String?,
+                    adobeDataProviderId: String?,
+                    authState: AdobeVisitorAuthState?) {
+        getECID() { [weak self] result in
+            guard let self = self else { return }
             switch result {
             case .success(let visitor):
-                self.visitor = visitor
-                completion?(.success(visitor))
-            case .failure(let error):
-                if retries < self.config.adobeVisitorRetries {
-                    self.retryManager.submit {
-                        self.getECID(retries: retries + 1, completion: completion)
-                    }
-                } else {
-                    self.error = error
-                    completion?(.failure(error))
+                if let adobeCustomVisitorId = knownId,
+                    let dataProviderId = adobeDataProviderId {
+                    self.linkECIDToKnownIdentifier(adobeCustomVisitorId,
+                                                   dataProviderId: dataProviderId,
+                                                   authState: authState,
+                                                   visitor: visitor)
                 }
+            case .failure:
+                break
             }
         }
     }
@@ -137,91 +152,25 @@ public class TealiumAdobeVisitorModule: Collector {
     ///     - customVisitorId: `String` containing the custom visitor ID (e.g. email address or other known visitor ID)
     ///     - dataProviderId: `String` containing the data provider ID for this user identifier
     ///     - authState: `AdobeVisitorAuthState?` the visitor's current authentication state
-    ///     - retries: `Int?` the current number of retries
-    func getAndLink(customVisitorId: String,
-                    dataProviderId: String,
-                    authState: AdobeVisitorAuthState?,
-                    retries: Int = 0) {
-        guard let visitorAPI = visitorAPI else {
-            return
-        }
-        visitorAPI.getNewECIDAndLink(customVisitorId: customVisitorId, dataProviderId: dataProviderId, authState: authState) { result in
-            switch result {
-            case .success(let ecID):
-                self.visitor = ecID
-            case .failure(let error):
-                if retries < self.config.adobeVisitorRetries {
-                    self.retryManager.submit {
-                        self.getAndLink(customVisitorId: customVisitorId, dataProviderId: dataProviderId, authState: authState, retries: retries + 1)
-                    }
-                } else {
-                    self.error = error
-                }
-            }
-        }
-    }
-
-    /// Links a known visitor ID to an ECID
-    /// - Parameters:
-    ///     - customVisitorId: `String` containing the custom visitor ID (e.g. email address or other known visitor ID)
-    ///     - dataProviderId: `String` containing the data provider ID for this user identifier
-    ///     - authState: `AdobeVisitorAuthState?` the visitor's current authentication state
-    ///     - retries: `Int?` the current number of retries
     func linkECIDToKnownIdentifier(_ customVisitorId: String,
                                    dataProviderId: String,
                                    authState: AdobeVisitorAuthState? = nil,
-                                   retries: Int = 0,
+                                   visitor: AdobeVisitor,
                                    completion: AdobeVisitorCompletion? = nil) {
-        guard let visitorAPI = visitorAPI else {
-            return
-        }
-        guard let experienceCloudId = self.visitor?.experienceCloudID else {
-            getAndLink(customVisitorId: customVisitorId, dataProviderId: dataProviderId, authState: authState)
-            return
-        }
-
-        visitorAPI.linkExistingECIDToKnownIdentifier(customVisitorId: customVisitorId, dataProviderID: dataProviderId, experienceCloudId: experienceCloudId, authState: config.adobeVisitorAuthState) { result in
-            switch result {
-            case .success(let visitor):
-                self.visitor = visitor
-                completion?(.success(visitor))
-            case .failure(let error):
-                if retries < self.config.adobeVisitorRetries {
-                    self.retryManager.submit {
-                        self.linkECIDToKnownIdentifier(customVisitorId, dataProviderId: dataProviderId, authState: authState, retries: retries + 1, completion: completion)
-                    }
-                } else {
-                    self.error = error
-                    completion?(.failure(error))
-                }
-            }
+        visitorAPI?.linkExistingECIDToKnownIdentifier(customVisitorId: customVisitorId,
+                                                     dataProviderID: dataProviderId,
+                                                     experienceCloudId: visitor.experienceCloudID,
+                                                     authState: config.adobeVisitorAuthState) { result in
+            self.completeCall(result: result)
+            completion?(result)
         }
     }
 
     /// Sends a refresh request to the Adobe Visitor API. Used if the TTL has expired.
     /// - Parameters:
     ///     - visitor: `AdobeVisitor` containing the current ECID
-    ///     - retries: `Int?` the current number of retries
-    func refreshECID(retries: Int = 0,
-                     visitor: AdobeVisitor?) {
-        guard let visitorAPI = visitorAPI,
-              let existingECID = visitor?.experienceCloudID else {
-            return
-        }
-        visitorAPI.refreshECID(existingECID: existingECID) { result in
-            switch result {
-            case .success(let visitor):
-                self.visitor = visitor
-            case .failure(let error):
-                if retries < self.config.adobeVisitorRetries {
-                    self.retryManager.submit {
-                        self.refreshECID(retries: retries + 1, visitor: visitor)
-                    }
-                } else {
-                    self.error = error
-                }
-            }
-        }
+    func refreshECID(visitor: AdobeVisitor) {
+        visitorAPI?.refreshECID(existingECID: visitor.experienceCloudID, completion: self.completeCall)
     }
     
     /// Resets the Adobe Experience Cloud ID. A new ID will be requested immediately
@@ -229,9 +178,17 @@ public class TealiumAdobeVisitorModule: Collector {
     ///     - result: `Result<AdobeVisitor, Error>` Result type to receive a valid Adobe Visitor or an error
     func resetECID(completion: AdobeVisitorCompletion? = nil) {
         self.visitor = nil
-        self.visitorAPI?.visitor = nil
         visitorAPI?.resetNetworkSession()
         getECID(completion: completion)
+    }
+    
+    private func completeCall(result: AdobeResult) {
+        switch result {
+        case .success(let visitor):
+            self.visitor = visitor
+        case .failure(let error):
+            self.error = error
+        }
     }
 }
 
@@ -244,7 +201,7 @@ extension TealiumAdobeVisitorModule: DispatchValidator {
             return (false, [AdobeVisitorModuleKeys.error: "Unrecoverable error: \(error.localizedDescription)"])
         }
         guard let data = self.data else {
-            return (true, [TealiumKey.queueReason: AdobeVisitorError.missingExperienceCloudID.localizedDescription])
+            return (true, [TealiumDataKey.queueReason: AdobeVisitorError.missingExperienceCloudID.localizedDescription])
         }
         return (false, data)
     }

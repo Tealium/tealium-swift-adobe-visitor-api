@@ -1,12 +1,12 @@
 # Uncomment the next line to define a global platform for your project
-# platform :ios, '9.0'
+ platform :ios, '11.0'
 
 target 'VisitorAPIExample' do
   # Comment the next line if you don't want to use dynamic frameworks
   use_frameworks!
 
   # Pods for VisitorAPIExample
-pod 'tealium-swift'
+pod 'tealium-swift', :git => 'https://github.com/Tealium/tealium-swift.git', :branch => 'mt-1086'
 pod 'TealiumAdobeVisitorAPI', :path => '../../'
 
 end

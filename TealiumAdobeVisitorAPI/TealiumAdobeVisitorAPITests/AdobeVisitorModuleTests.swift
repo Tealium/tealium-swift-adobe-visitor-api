@@ -9,16 +9,18 @@ import XCTest
 @testable import TealiumAdobeVisitorAPI
 import TealiumCore
 
+let retryManager = AdobeVisitorModuleTests.TestRetryManager(queue: DispatchQueue(label: "test"))
+
 class AdobeVisitorModuleTests: XCTestCase {
     
-    var mockVisitorAPISuccess = AdobeVisitorAPI(networkSession: MockNetworkSessionVisitorSuccess(), adobeOrgId: AdobeVisitorAPITestHelpers.adobeOrgId)
-    var mockVisitorAPISuccessEmptyECID = AdobeVisitorAPI(networkSession: MockNetworkSessionVisitorSuccessEmptyECID(), adobeOrgId: AdobeVisitorAPITestHelpers.adobeOrgId)
-    var mockVisitorAPIFailure = AdobeVisitorAPI(networkSession: MockNetworkSessionVisitorFailure(), adobeOrgId: AdobeVisitorAPITestHelpers.adobeOrgId)
+    var mockVisitorAPINeverRespond = AdobeVisitorAPI(networkSession: MockNetworkSessionNeverRespond(), retryManager: retryManager, adobeOrgId: AdobeVisitorAPITestHelpers.adobeOrgId)
+    var mockVisitorAPISuccess = AdobeVisitorAPI(networkSession: MockNetworkSessionVisitorSuccess(), retryManager: retryManager, adobeOrgId: AdobeVisitorAPITestHelpers.adobeOrgId)
+    var mockVisitorAPISuccessEmptyECID = AdobeVisitorAPI(networkSession: MockNetworkSessionVisitorSuccessEmptyECID(), retryManager: retryManager, adobeOrgId: AdobeVisitorAPITestHelpers.adobeOrgId)
+    var mockVisitorAPIFailure = AdobeVisitorAPI(networkSession: MockNetworkSessionVisitorFailure(), retryManager: retryManager, adobeOrgId: AdobeVisitorAPITestHelpers.adobeOrgId)
     static var testConfig: TealiumConfig {
         get {
             let config = TealiumConfig(account: "tealiummobile", profile: "demo", environment: "dev")
             config.collectors = []
-            config.appDelegateProxyEnabled = false
             config.adobeVisitorOrgId = AdobeVisitorAPITestHelpers.adobeOrgId
             config.dispatchers = []
             return config
@@ -29,7 +31,6 @@ class AdobeVisitorModuleTests: XCTestCase {
         get {
             let config = TealiumConfig(account: "tealiummobile", profile: "demo", environment: "dev")
             config.collectors = []
-            config.appDelegateProxyEnabled = false
             config.dispatchers = []
             return config
         }
@@ -45,9 +46,11 @@ class AdobeVisitorModuleTests: XCTestCase {
     class TestRetryManager: Retryable {
         var queue: DispatchQueue
         var delay: TimeInterval?
-        required init(queue: DispatchQueue, delay: TimeInterval?) {
+        var maxRetries: Int
+        required init(queue: DispatchQueue, delay: TimeInterval? = nil, maxRetries: Int = 5) {
             self.queue = queue
             self.delay = delay
+            self.maxRetries = maxRetries
         }
         
         func submit(completion: @escaping () -> Void) {
@@ -61,7 +64,10 @@ class AdobeVisitorModuleTests: XCTestCase {
         let config = AdobeVisitorModuleTests.testConfig.copy
         let context = TealiumContext(config: config, dataLayer: AdobeVisitorModuleTests.dataLayer, tealium: AdobeVisitorModuleTests.tealium)
         
-        let module = TealiumAdobeVisitorModule(context: context, delegate: nil, diskStorage: MockAdobeVisitorDiskStorageEmpty(), retryManager: TestRetryManager(queue: DispatchQueue(label: "test"), delay: nil), adobeVisitorAPI: mockVisitorAPISuccessEmptyECID) { _, _ in
+        let module = TealiumAdobeVisitorModule(context: context,
+                                               delegate: nil,
+                                               diskStorage: MockAdobeVisitorDiskStorageEmpty(),
+                                               adobeVisitorAPI: mockVisitorAPINeverRespond) { _, _ in
             
         }
         
@@ -74,11 +80,11 @@ class AdobeVisitorModuleTests: XCTestCase {
         let config = AdobeVisitorModuleTests.testConfig.copy
         let context = TealiumContext(config: config, dataLayer: AdobeVisitorModuleTests.dataLayer, tealium: AdobeVisitorModuleTests.tealium)
         
-        let module = TealiumAdobeVisitorModule(context: context, delegate: nil, diskStorage: MockAdobeVisitorDiskStorageEmpty(), retryManager: TestRetryManager(queue: DispatchQueue(label: "test"), delay: nil), adobeVisitorAPI: mockVisitorAPISuccessEmptyECID) { _, _ in
+        let api = mockVisitorAPISuccessEmptyECID
+        api.visitor = AdobeVisitor(experienceCloudID: AdobeVisitorAPITestHelpers.ecID, idSyncTTL: "1", dcsRegion: "1", blob: "1", nextRefresh: Date())
+        let module = TealiumAdobeVisitorModule(context: context, delegate: nil, diskStorage: MockAdobeVisitorDiskStorageEmpty(), adobeVisitorAPI: api) { _, _ in
             
         }
-        
-        module.visitor = AdobeVisitor(experienceCloudID: AdobeVisitorAPITestHelpers.ecID, idSyncTTL: "1", dcsRegion: "1", blob: "1", nextRefresh: Date())
         let request = TealiumTrackRequest(data: [:])
         XCTAssertFalse(module.shouldQueue(request: request).0)
         XCTAssertEqual(module.shouldQueue(request: request).1!["adobe_ecid"] as! String, AdobeVisitorAPITestHelpers.ecID)
@@ -88,10 +94,8 @@ class AdobeVisitorModuleTests: XCTestCase {
         let config = AdobeVisitorModuleTests.testConfig.copy
         let context = TealiumContext(config: config, dataLayer: AdobeVisitorModuleTests.dataLayer, tealium: AdobeVisitorModuleTests.tealium)
         
-        let module = TealiumAdobeVisitorModule(context: context, delegate: nil, diskStorage: MockAdobeVisitorDiskStorageEmpty(), retryManager: TestRetryManager(queue: DispatchQueue(label: "test"), delay: nil), adobeVisitorAPI: mockVisitorAPISuccessEmptyECID) { _, _ in
-            
+        let module = TealiumAdobeVisitorModule(context: context, delegate: nil, diskStorage: MockAdobeVisitorDiskStorageEmpty(), adobeVisitorAPI: mockVisitorAPINeverRespond) { _, _ in
         }
-        
         module.visitor = AdobeVisitor(experienceCloudID: nil, idSyncTTL: "1", dcsRegion: "1", blob: "1", nextRefresh: Date())
         let request = TealiumTrackRequest(data: [:])
         XCTAssertTrue(module.shouldQueue(request: request).0)
@@ -101,7 +105,7 @@ class AdobeVisitorModuleTests: XCTestCase {
         let config = AdobeVisitorModuleTests.testConfig.copy
         let context = TealiumContext(config: config, dataLayer: AdobeVisitorModuleTests.dataLayer, tealium: AdobeVisitorModuleTests.tealium)
         
-        let module = TealiumAdobeVisitorModule(context: context, delegate: nil, diskStorage: MockAdobeVisitorDiskStorageEmpty(), retryManager: TestRetryManager(queue: DispatchQueue(label: "test"), delay: nil), adobeVisitorAPI: mockVisitorAPISuccessEmptyECID) { _, _ in
+        let module = TealiumAdobeVisitorModule(context: context, delegate: nil, diskStorage: MockAdobeVisitorDiskStorageEmpty(), adobeVisitorAPI: mockVisitorAPISuccessEmptyECID) { _, _ in
             
         }
         
@@ -114,7 +118,7 @@ class AdobeVisitorModuleTests: XCTestCase {
         let config = AdobeVisitorModuleTests.testConfig.copy
         let context = TealiumContext(config: config, dataLayer: AdobeVisitorModuleTests.dataLayer, tealium: AdobeVisitorModuleTests.tealium)
 
-        let module = TealiumAdobeVisitorModule(context: context, delegate: nil, diskStorage: MockAdobeVisitorDiskStorageEmpty(), retryManager: TestRetryManager(queue: DispatchQueue(label: "test"), delay: nil), adobeVisitorAPI: mockVisitorAPISuccessEmptyECID) { _, _ in
+        let module = TealiumAdobeVisitorModule(context: context, delegate: nil, diskStorage: MockAdobeVisitorDiskStorageEmpty(), adobeVisitorAPI: mockVisitorAPISuccessEmptyECID) { _, _ in
             
         }
         module.config.adobeVisitorOrgId = nil
@@ -129,7 +133,7 @@ class AdobeVisitorModuleTests: XCTestCase {
         let config = AdobeVisitorModuleTests.testConfig.copy
         let context = TealiumContext(config: config, dataLayer: AdobeVisitorModuleTests.dataLayer, tealium: AdobeVisitorModuleTests.tealium)
         
-        let module = TealiumAdobeVisitorModule(context: context, delegate: nil, diskStorage: MockAdobeVisitorDiskStorageEmpty(), retryManager: TestRetryManager(queue: DispatchQueue(label: "test"), delay: nil), adobeVisitorAPI: mockVisitorAPISuccessEmptyECID) { _, _ in
+        let module = TealiumAdobeVisitorModule(context: context, delegate: nil, diskStorage: MockAdobeVisitorDiskStorageEmpty(), adobeVisitorAPI: mockVisitorAPISuccessEmptyECID) { _, _ in
             
         }
         
@@ -138,48 +142,11 @@ class AdobeVisitorModuleTests: XCTestCase {
         XCTAssertFalse(module.shouldDrop(request: request))
     }
     
-    func testLinkToKnownIdentifierRetriesOnFailureIfECIDAvailable() {
-        let expectation = self.expectation(description: "linkToKnownIdentifier")
-        let config = AdobeVisitorModuleTests.testConfig.copy
-        let context = TealiumContext(config: config, dataLayer: AdobeVisitorModuleTests.dataLayer, tealium: AdobeVisitorModuleTests.tealium)
-    
-        let module = TealiumAdobeVisitorModule(context: context, delegate: nil, diskStorage: MockAdobeVisitorDiskStoragePopulated(), retryManager: TestRetryManager(queue: DispatchQueue(label: "test"), delay: nil), adobeVisitorAPI: MockVisitorAPILinkFailure(expectation: expectation, count: 5)) { _, _ in
-            
-        }
-        
-        module.linkECIDToKnownIdentifier("test@test.com", dataProviderId: "123456")
-        
-
-        waitForExpectations(timeout: 1.0) { error in
-            XCTAssertEqual(module.visitor!.experienceCloudID, AdobeVisitorAPITestHelpers.ecID)
-            let shouldQueue = module.shouldQueue(request: TealiumTrackRequest(data: [:]))
-            XCTAssertFalse(shouldQueue.0)
-            XCTAssertNotNil(module.error)
-            XCTAssertTrue(module.error! as! AdobeVisitorError == AdobeVisitorError.invalidJSON)
-        }
-    }
-    
-    func testExistingECIDUsedOnFailure() {
-        let expectation = self.expectation(description: "failure")
-        let config = AdobeVisitorModuleTests.testConfig.copy
-        let context = TealiumContext(config: config, dataLayer: AdobeVisitorModuleTests.dataLayer, tealium: AdobeVisitorModuleTests.tealium)
-        
-        let module = TealiumAdobeVisitorModule(context: context, delegate: nil, diskStorage: MockAdobeVisitorDiskStoragePopulated(), retryManager: TestRetryManager(queue: DispatchQueue(label: "test"), delay: nil), adobeVisitorAPI: MockVisitorAPIRefreshFailure(expectation: expectation, count: 5)) { _, _ in
-            
-        }
-
-        waitForExpectations(timeout: 10.0) { error in
-            XCTAssertEqual(module.visitor!.experienceCloudID, AdobeVisitorAPITestHelpers.ecID)
-            let shouldQueue = module.shouldQueue(request: TealiumTrackRequest(data: [:]))
-            XCTAssertFalse(shouldQueue.0)
-        }
-    }
-    
     func testECIDNotNullOnInvalidResponse() {
         let config = AdobeVisitorModuleTests.testConfig.copy
         let context = TealiumContext(config: config, dataLayer: AdobeVisitorModuleTests.dataLayer, tealium: AdobeVisitorModuleTests.tealium)
         
-        let module = TealiumAdobeVisitorModule(context: context, delegate: nil, diskStorage: MockAdobeVisitorDiskStorageEmpty(), retryManager: TestRetryManager(queue: DispatchQueue(label: "test"), delay: nil), adobeVisitorAPI: mockVisitorAPISuccessEmptyECID) { _, _ in
+        let module = TealiumAdobeVisitorModule(context: context, delegate: nil, diskStorage: MockAdobeVisitorDiskStorageEmpty(), adobeVisitorAPI: mockVisitorAPISuccessEmptyECID) { _, _ in
             
         }
         
@@ -192,36 +159,19 @@ class AdobeVisitorModuleTests: XCTestCase {
         let config = AdobeVisitorModuleTests.testConfig.copy
         let context = TealiumContext(config: config, dataLayer: AdobeVisitorModuleTests.dataLayer, tealium: AdobeVisitorModuleTests.tealium)
         
-        let module = TealiumAdobeVisitorModule(context: context, delegate: nil, diskStorage: nil, retryManager: TestRetryManager(queue: DispatchQueue(label: "test"), delay: nil), adobeVisitorAPI: mockVisitorAPISuccess) { _, _ in
+        let module = TealiumAdobeVisitorModule(context: context, delegate: nil, diskStorage: nil, adobeVisitorAPI: mockVisitorAPISuccess) { _, _ in
             
         }
         
         module.getECID()
-        XCTAssertEqual(module.visitor!.experienceCloudID!, AdobeVisitorAPITestHelpers.ecID)
+        XCTAssertEqual(module.visitor!.experienceCloudID, AdobeVisitorAPITestHelpers.ecID)
     }
-    
-    func testGetAndLinkRetriesOnFailure() {
-        let expectation = self.expectation(description: "testGetAndLinkRetriesOnFailure")
-        let config = AdobeVisitorModuleTests.testConfig.copy
-        config.adobeVisitorCustomVisitorId = "abc123@123.com"
-        config.adobeVisitorDataProviderId = "email"
-        let context = TealiumContext(config: config, dataLayer: AdobeVisitorModuleTests.dataLayer, tealium: AdobeVisitorModuleTests.tealium)
 
-        let module = TealiumAdobeVisitorModule(context: context, delegate: nil, diskStorage: MockAdobeVisitorDiskStorageEmpty(), retryManager: TestRetryManager(queue: DispatchQueue(label: "test"), delay: nil), adobeVisitorAPI: MockVisitorAPIGetAndLinkFailure(expectation: expectation, count: 5)) { _, _ in
-
-        }
-        
-        waitForExpectations(timeout: 10.0) { error in
-            XCTAssertEqual(module.error as? AdobeVisitorError, AdobeVisitorError.invalidJSON)
-        
-        }
-    }
-    
     func testDataNotReturnedIfECIDMissing() {
         let config = AdobeVisitorModuleTests.testConfig.copy
         let context = TealiumContext(config: config, dataLayer: AdobeVisitorModuleTests.dataLayer, tealium: AdobeVisitorModuleTests.tealium)
         
-        let module = TealiumAdobeVisitorModule(context: context, delegate: nil, diskStorage: MockAdobeVisitorDiskStorageEmpty(), retryManager: TestRetryManager(queue: DispatchQueue(label: "test"), delay: nil), adobeVisitorAPI: mockVisitorAPISuccessEmptyECID) { _, _ in
+        let module = TealiumAdobeVisitorModule(context: context, delegate: nil, diskStorage: MockAdobeVisitorDiskStorageEmpty(), adobeVisitorAPI: mockVisitorAPISuccessEmptyECID) { _, _ in
             
         }
         
@@ -233,7 +183,7 @@ class AdobeVisitorModuleTests: XCTestCase {
         let config = AdobeVisitorModuleTests.testConfig.copy
         let context = TealiumContext(config: config, dataLayer: AdobeVisitorModuleTests.dataLayer, tealium: AdobeVisitorModuleTests.tealium)
         
-        let module = TealiumAdobeVisitorModule(context: context, delegate: nil, diskStorage: MockAdobeVisitorDiskStorageEmpty(), retryManager: TestRetryManager(queue: DispatchQueue(label: "test"), delay: nil), adobeVisitorAPI: mockVisitorAPISuccessEmptyECID) { _, _ in
+        let module = TealiumAdobeVisitorModule(context: context, delegate: nil, diskStorage: MockAdobeVisitorDiskStorageEmpty(), adobeVisitorAPI: mockVisitorAPISuccessEmptyECID) { _, _ in
             
         }
         
@@ -247,7 +197,7 @@ class AdobeVisitorModuleTests: XCTestCase {
         XCTAssertNil(config.adobeVisitorOrgId)
         let context = TealiumContext(config: config, dataLayer: AdobeVisitorModuleTests.dataLayer, tealium: AdobeVisitorModuleTests.tealium)
         
-        let module = TealiumAdobeVisitorModule(context: context, delegate: nil, diskStorage: MockAdobeVisitorDiskStorageEmpty(), retryManager: TestRetryManager(queue: DispatchQueue(label: "test"), delay: nil), adobeVisitorAPI: mockVisitorAPISuccessEmptyECID) { result, _ in
+        let module = TealiumAdobeVisitorModule(context: context, delegate: nil, diskStorage: MockAdobeVisitorDiskStorageEmpty(), adobeVisitorAPI: mockVisitorAPISuccessEmptyECID) { result, _ in
             switch result {
             case .failure(let error):
                 XCTAssertEqual(error as! AdobeVisitorError, AdobeVisitorError.missingOrgID)
@@ -265,15 +215,10 @@ class AdobeVisitorModuleTests: XCTestCase {
         let config = AdobeVisitorModuleTests.testConfig.copy
         let context = TealiumContext(config: config, dataLayer: AdobeVisitorModuleTests.dataLayer, tealium: AdobeVisitorModuleTests.tealium)
     
-        let module = TealiumAdobeVisitorModule(context: context, delegate: nil, diskStorage: MockAdobeVisitorDiskStorageEmpty(), retryManager: TestRetryManager(queue: DispatchQueue(label: "test"), delay: nil), adobeVisitorAPI: MockVisitorAPIRefreshSuccess(expectation: expectation, count: 5)) { _, _ in
-            
+        let module = TealiumAdobeVisitorModule(context: context, delegate: nil, diskStorage: MockAdobeVisitorDiskStoragePopulated(), adobeVisitorAPI: MockVisitorAPIRefreshSuccess(expectation: expectation, count: 5)) { _, _ in
         }
         
-        XCTAssertNil(module.visitor)
-        
-        module.diskStorage = MockAdobeVisitorDiskStoragePopulated()
-        let ecid = module.getECIDFromDisk()
-        XCTAssertEqual(AdobeVisitorAPITestHelpers.ecID, ecid?.experienceCloudID)
+        XCTAssertEqual(AdobeVisitorAPITestHelpers.ecID, module.visitor?.experienceCloudID)
         wait(for: [expectation], timeout: 1)
     }
     
@@ -289,7 +234,7 @@ class AdobeVisitorModuleTests: XCTestCase {
         let config = AdobeVisitorModuleTests.testConfig.copy
         let context = TealiumContext(config: config, dataLayer: AdobeVisitorModuleTests.dataLayer, tealium: AdobeVisitorModuleTests.tealium)
     
-        let module = TealiumAdobeVisitorModule(context: context, delegate: nil, diskStorage: MockAdobeVisitorDiskStoragePopulated(), retryManager: TestRetryManager(queue: DispatchQueue(label: "test"), delay: nil), adobeVisitorAPI: MockVisitorAPILinkFailure(expectation: nil, count: 5)) { _, _ in
+        let module = TealiumAdobeVisitorModule(context: context, delegate: nil, diskStorage: MockAdobeVisitorDiskStoragePopulated(), adobeVisitorAPI: MockVisitorAPILinkFailure(expectation: nil, count: 5)) { _, _ in
             
         }
         
@@ -603,11 +548,8 @@ class MockVisitorAPIGetAndLinkFailure: AdobeExperienceCloudIDService {
     }
     
     func getNewECID(completion: @escaping AdobeVisitorCompletion) {
-    }
-    
-    func getNewECIDAndLink(customVisitorId: String, dataProviderId: String, authState: AdobeVisitorAuthState?, completion: AdobeVisitorCompletion?) {
         getNewECIDAndLinkCallCount += 1
-        completion?(.failure(AdobeVisitorError.invalidJSON))
+        completion(.failure(AdobeVisitorError.invalidJSON))
         if (getNewECIDAndLinkCallCount == count) {
             self.expectation?.fulfill()
         }

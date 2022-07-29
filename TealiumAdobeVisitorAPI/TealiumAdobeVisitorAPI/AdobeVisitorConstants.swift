@@ -31,7 +31,6 @@ struct TealiumAdobeVisitorConstants {
     public static let dataProviderId = "adobe_data_provider_id"
     public static let authState = "adobe_auth_state"
     public static let orgIdSuffix = "@AdobeOrg"
-    public static let adobeEcid = "adobe_ecid"
     public static let moduleName = "adobevisitor"
     public static let retries = "retries"
 }

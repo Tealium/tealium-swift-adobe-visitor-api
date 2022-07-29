@@ -50,18 +50,22 @@ protocol NetworkSession {
 }
 
 protocol Retryable {
+    var maxRetries: Int { get }
     init(queue: DispatchQueue,
-         delay: TimeInterval?)
+         delay: TimeInterval?,
+         maxRetries: Int)
     func submit(completion: @escaping () -> Void)
 }
 
 class RetryManager: Retryable {
     var queue: DispatchQueue
     var delay: TimeInterval?
+    var maxRetries: Int
 
-    required init(queue: DispatchQueue, delay: TimeInterval?) {
+    required init(queue: DispatchQueue, delay: TimeInterval?, maxRetries: Int) {
         self.queue = queue
         self.delay = delay
+        self.maxRetries = maxRetries
     }
 
     func submit(completion: @escaping () -> Void) {

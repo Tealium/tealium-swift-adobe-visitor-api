@@ -1,16 +1,14 @@
 {
-  "object": {
-    "pins": [
-      {
-        "package": "tealium-swift",
-        "repositoryURL": "https://github.com/Tealium/tealium-swift.git",
-        "state": {
-          "branch": null,
-          "revision": "2591e46f36ac9c10970da2ad2df835078e574a19",
-          "version": "2.3.0"
-        }
+  "pins" : [
+    {
+      "identity" : "tealium-swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Tealium/tealium-swift.git",
+      "state" : {
+        "branch" : "mt-1086",
+        "revision" : "2cfc6e1c5022fb72ef331f16b2801ee44f91e063"
       }
-    ]
-  },
-  "version": 1
+    }
+  ],
+  "version" : 2
 }

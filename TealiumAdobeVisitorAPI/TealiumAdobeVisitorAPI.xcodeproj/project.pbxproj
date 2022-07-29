@@ -513,8 +513,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Tealium/tealium-swift.git";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 2.3.0;
+				branch = "mt-1086";
+				kind = branch;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */

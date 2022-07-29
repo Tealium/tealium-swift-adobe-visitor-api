@@ -44,6 +44,17 @@ struct AdobeVisitorAPITestHelpers {
     }
 }
 
+class MockNetworkSessionNeverRespond: NetworkSession {
+    func loadData(from request: URLRequest,
+                  completionHandler: @escaping (NetworkResult) -> Void) {
+    }
+
+    func invalidateAndClose() {}
+    
+    func reset() {
+        
+    }
+}
 
 class MockNetworkSessionVisitorSuccess: NetworkSession {
     func loadData(from request: URLRequest,
@@ -81,8 +92,13 @@ class MockNetworkSessionVisitorSuccessEmptyECID: NetworkSession {
 }
 
 class MockNetworkSessionVisitorFailure: NetworkSession {
+    var expectation: XCTestExpectation?
+    init(expectation: XCTestExpectation? = nil) {
+        self.expectation = expectation
+    }
     func loadData(from request: URLRequest,
                   completionHandler: @escaping (NetworkResult) -> Void) {
+        expectation?.fulfill()
         completionHandler(.failure(AdobeVisitorError.missingOrgID))
     }
 
@@ -102,13 +118,17 @@ class TealiumAdobeVisitorAPITests: XCTestCase {
     override func tearDownWithError() throws {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
+    var adobeVisitorAPI: AdobeVisitorAPI {
+        AdobeVisitorAPI(networkSession: MockNetworkSessionVisitorSuccess(),
+                                              retryManager: retryManager,
+                                              adobeOrgId: AdobeVisitorAPITestHelpers.adobeOrgId)
+    }
     
     func testGenerateECID() {
 
         let expectation = self.expectation(description: "Generate New ECID")
 
-        let adobeVisitorAPI = AdobeVisitorAPI.init(networkSession: MockNetworkSessionVisitorSuccess(),
-                                                   adobeOrgId: AdobeVisitorAPITestHelpers.adobeOrgId)
+        let adobeVisitorAPI = adobeVisitorAPI
 
         adobeVisitorAPI.getNewECID() { result in
             switch result {
@@ -128,8 +148,7 @@ class TealiumAdobeVisitorAPITests: XCTestCase {
 
         let expectation = self.expectation(description: "Link Known ID")
 
-        let adobeVisitorAPI = AdobeVisitorAPI(networkSession: MockNetworkSessionVisitorSuccess(),
-                                              adobeOrgId: AdobeVisitorAPITestHelpers.adobeOrgId)
+        let adobeVisitorAPI = adobeVisitorAPI
 
         adobeVisitorAPI.linkExistingECIDToKnownIdentifier(
                 customVisitorId: AdobeVisitorAPITestHelpers.testVisitorId,
@@ -148,44 +167,17 @@ class TealiumAdobeVisitorAPITests: XCTestCase {
     }
 
     func testGenerateCIDParam() {
-        let adobeVisitorAPI = AdobeVisitorAPI(networkSession: MockNetworkSessionVisitorSuccess(),
-                                              adobeOrgId: AdobeVisitorAPITestHelpers.adobeOrgId)
-
+        let adobeVisitorAPI = adobeVisitorAPI
         let expectedCID = "\(AdobeVisitorAPITestHelpers.testDPID)%01\(AdobeVisitorAPITestHelpers.userID)%01\(AdobeVisitorAPITestHelpers.authstate.rawValue.description)"
 
         let cid = adobeVisitorAPI.generateCID(dataProviderId: AdobeVisitorAPITestHelpers.testDPID, customVisitorId: AdobeVisitorAPITestHelpers.userID, authState: AdobeVisitorAPITestHelpers.authstate)
         XCTAssertEqual(cid, expectedCID, "CID parameters do not match")
     }
-
-    func testGetNewECIDAndLink() {
-
-        let expectation = self.expectation(description: "Generate and link")
-
-        let adobeVisitorAPI = AdobeVisitorAPI(networkSession: MockNetworkSessionVisitorSuccess(),
-                                              adobeOrgId: AdobeVisitorAPITestHelpers.adobeOrgId)
-
-        adobeVisitorAPI.getNewECIDAndLink(
-                customVisitorId: AdobeVisitorAPITestHelpers.testVisitorId,
-                dataProviderId: "0",
-                authState: AdobeVisitorAPITestHelpers.authstate
-        ) { result in
-            switch result {
-            case .success:
-                expectation.fulfill()
-            case .failure (let error):
-                XCTFail("Unexpected failure when retrieving ECID: \(error.localizedDescription)")
-            }
-        }
-
-        self.wait(for: [expectation], timeout: 10.0)
-
-    }
     
     func testRefreshECID() {
         let expectation = self.expectation(description: "Refresh")
 
-        let adobeVisitorAPI = AdobeVisitorAPI(networkSession: MockNetworkSessionVisitorSuccess(),
-                                              adobeOrgId: AdobeVisitorAPITestHelpers.adobeOrgId)
+        let adobeVisitorAPI = adobeVisitorAPI
 
         adobeVisitorAPI.refreshECID(
                 existingECID: AdobeVisitorAPITestHelpers.testVisitorId) { result in
@@ -200,16 +192,17 @@ class TealiumAdobeVisitorAPITests: XCTestCase {
         self.wait(for: [expectation], timeout: 10.0)
     }
 
-    func testDecodeECIDJSON() {
-        let json = ["test": "test", "dcs_region": "gb"]
-        let adobeVisitorAPI = AdobeVisitorAPI(networkSession: MockNetworkSessionVisitorSuccess(),
+    func testFailingCallRetries() {
+        
+        let expectation = self.expectation(description: "Retries 5 times + the first call")
+        expectation.expectedFulfillmentCount = retryManager.maxRetries + 1
+
+        let adobeVisitorAPI = AdobeVisitorAPI(networkSession: MockNetworkSessionVisitorFailure(expectation: expectation),
+                                              retryManager: retryManager,
                                               adobeOrgId: AdobeVisitorAPITestHelpers.adobeOrgId)
-
-        let result = adobeVisitorAPI.removeExtraKeys(json)
-        XCTAssertNil(result["test"], "Unexpected value in dictionary")
-        XCTAssertNotNil(result["dcs_region"], "Missing expected value in dictionary")
+        adobeVisitorAPI.sendRequest(url: URL(string: "www.example.com")!, completion: nil)
+        
+        self.wait(for: [expectation], timeout: 10.0)
     }
-
-
 
 }

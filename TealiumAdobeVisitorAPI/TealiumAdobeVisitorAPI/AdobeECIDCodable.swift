@@ -8,18 +8,11 @@
 import Foundation
 
 public struct AdobeVisitor: Codable {
-    public var experienceCloudID: String?
+    public var experienceCloudID: String
     public var idSyncTTL: String?
     public var dcsRegion: String?
     public var blob: String?
     public var nextRefresh: Date?
-    public var isEmpty: Bool {
-        experienceCloudID == nil &&
-            idSyncTTL == nil &&
-            dcsRegion == nil &&
-            blob == nil &&
-            nextRefresh == nil
-    }
 
     enum CodingKeys: String, CodingKey {
         case experienceCloudID = "d_mid"
@@ -29,11 +22,15 @@ public struct AdobeVisitor: Codable {
         case blob = "d_blob"
     }
 
-    init?(experienceCloudID: String?, idSyncTTL: String?, dcsRegion: String?, blob: String?, nextRefresh: Date?) {
+    init?(experienceCloudID: String?, idSyncTTL: String? = nil, dcsRegion: String? = nil, blob: String? = nil, nextRefresh: Date? = nil) {
         guard let ecId = experienceCloudID else {
             return nil
         }
-        self.experienceCloudID = ecId
+        self.init(experienceCloudID: ecId, idSyncTTL: idSyncTTL, dcsRegion: dcsRegion, blob: blob, nextRefresh: nextRefresh)
+    }
+    
+    init(experienceCloudID: String, idSyncTTL: String? = nil, dcsRegion: String? = nil, blob: String? = nil, nextRefresh: Date? = nil) {
+        self.experienceCloudID = experienceCloudID
         self.idSyncTTL = idSyncTTL
         self.dcsRegion = dcsRegion
         self.blob = blob
@@ -41,20 +38,31 @@ public struct AdobeVisitor: Codable {
     }
 
     static func initWithDictionary(_ dict: [String: Any]) -> AdobeVisitor? {
+        guard let ecID = dict[AdobeVisitorKeys.experienceCloudId.rawValue] as? String, ecID != "<null>" else {
+            return nil
+        }
+        return AdobeVisitor(experienceCloudID: ecID)
+            .mergingDictionary(dict)
+    }
+    
+    func mergingDictionary(_ dict: [String: Any]?) -> AdobeVisitor {
+        guard let dict = dict else {
+            return self
+        }
         var adobeValues = [String: String]()
         for (key, value) in dict {
             adobeValues[key] = "\(value)"
         }
-        let ecID = adobeValues[AdobeVisitorKeys.experienceCloudId.rawValue]
-        if ecID == "<null>" || ecID == nil {
-            return nil
-        }
-        let idSyncTTL = adobeValues[AdobeVisitorKeys.idSyncTTL.rawValue]
-
-        let nextRefresh = getFutureDate(adding: idSyncTTL)
-        let dcsRegion = adobeValues[AdobeVisitorKeys.region.rawValue]
-        let blob = adobeValues[AdobeVisitorKeys.encryptedMetaData.rawValue]
-        return AdobeVisitor(experienceCloudID: ecID, idSyncTTL: idSyncTTL, dcsRegion: dcsRegion, blob: blob, nextRefresh: nextRefresh)
+        let idSyncTTL = adobeValues[AdobeVisitorKeys.idSyncTTL.rawValue] ?? self.idSyncTTL
+        
+        let nextRefresh = Self.getFutureDate(adding: idSyncTTL)
+        let dcsRegion = adobeValues[AdobeVisitorKeys.region.rawValue] ?? self.dcsRegion
+        let blob = adobeValues[AdobeVisitorKeys.encryptedMetaData.rawValue] ?? self.blob
+        return AdobeVisitor(experienceCloudID: self.experienceCloudID,
+                            idSyncTTL: idSyncTTL,
+                            dcsRegion: dcsRegion,
+                            blob: blob,
+                            nextRefresh: nextRefresh)
     }
 
     static func getFutureDate(adding ttlSeconds: String?) -> Date? {
@@ -68,5 +76,11 @@ public struct AdobeVisitor: Codable {
         components.setValue(seconds, for: .second)
         return Calendar(identifier: .gregorian).date(byAdding: components, to: currentDate)
     }
-
+    
+    func shouldRefresh() -> Bool {
+        guard let nextRefresh = nextRefresh else {
+            return true
+        }
+        return Date() >= nextRefresh
+    }
 }
