@@ -28,7 +28,7 @@ struct ContentView: View {
                 }).font(.custom("HelveticaNeue", size: 10.0)).multilineTextAlignment(.center).textFieldStyle(RoundedBorderTextFieldStyle())
                 
                 Button("Initialize Tealium", action: {
-                    TealiumHelper.start(orgId: orgID)
+                    TealiumHelper.start(orgId: orgID, knownId: knownId.nonEmpty(), existingECID: updater.ecid)
                 }).disabled(initDisabled)
                 
                 Button("Track Event", action: {
@@ -57,9 +57,20 @@ struct ContentView: View {
                     }
                 }).disabled(linkDisabled)
                 
+                if TealiumHelper.tealium != nil {
+                    Text("Adobe ECID:\n \(updater.ecid ?? "Not available yet")")
+                        .multilineTextAlignment(.center).padding()
+                } else {
+                    Text("Adobe ECID:")
+                    TextField("Enter Existing ECID", text: Binding<String>(get: {
+                        updater.ecid ?? ""
+                    }, set: { newValue in
+                        updater.ecid = newValue
+                    }), onCommit:  {
+                        
+                    }).font(.custom("HelveticaNeue", size: 10.0)).multilineTextAlignment(.center).textFieldStyle(RoundedBorderTextFieldStyle())
+                }
                 
-                Text("Adobe ECID:\n\(updater.ecid ?? "Not Available")")
-                    .multilineTextAlignment(.center).padding()
             }
         }
 
@@ -85,4 +96,15 @@ struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
     }
+}
+
+extension String {
+    
+    func nonEmpty() -> String? {
+        guard !isEmpty else {
+            return nil
+        }
+        return self
+    }
+    
 }

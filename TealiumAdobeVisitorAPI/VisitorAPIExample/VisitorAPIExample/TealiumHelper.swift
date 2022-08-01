@@ -26,13 +26,18 @@ class TealiumHelper {
 
     static var tealium: Tealium?
     
-    public static func start(orgId: String?) {
+    public static func start(orgId: String?, knownId: String?, existingECID: String?) {
         config.shouldUseRemotePublishSettings = false
         config.batchingEnabled = false
         config.remoteAPIEnabled = true
         if let orgId = orgId {
             config.adobeVisitorOrgId = orgId
         }
+        if let knownId = knownId {
+            config.adobeVisitorCustomVisitorId = knownId
+            config.adobeVisitorDataProviderId = "email"
+        }
+        config.adobeVisitorExistingEcid = existingECID
 
         config.adobeVisitorOrgId = orgId
         config.logLevel = .info
