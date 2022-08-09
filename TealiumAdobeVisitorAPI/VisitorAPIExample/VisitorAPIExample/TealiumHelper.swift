@@ -41,8 +41,8 @@ class TealiumHelper {
 
         config.adobeVisitorOrgId = orgId
         config.logLevel = .info
-        config.collectors = [Collectors.AdobeVisitor, Collectors.Lifecycle]
-        config.dispatchers = [Dispatchers.Collect]
+        config.collectors = [Collectors.AdobeVisitor] //, Collectors.Lifecycle]
+        config.dispatchers = [Dispatchers.TagManagement]
         config.dispatchListeners = [TealiumHelper.shared]
         TealiumHelper.tealium = Tealium(config: config)
     }

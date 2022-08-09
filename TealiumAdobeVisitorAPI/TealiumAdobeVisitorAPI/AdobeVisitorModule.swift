@@ -20,7 +20,6 @@ public class TealiumAdobeVisitorModule: Collector {
     let context: TealiumContext
     var diskStorage: TealiumDiskStorageProtocol?
     let visitorAPI: AdobeExperienceCloudIDService?
-
     public var data: [String: Any]? {
         get {
             if let ecID = visitor?.experienceCloudID {
@@ -31,6 +30,7 @@ public class TealiumAdobeVisitorModule: Collector {
         }
     }
 
+    private var onECIDUpdate = TealiumReplaySubject<String?>()
     public var visitor: AdobeVisitor? { // Always changed from the TealiumQueues.backgroundSerialQueue
         willSet {
             visitorAPI?.visitor = newValue
@@ -40,12 +40,18 @@ public class TealiumAdobeVisitorModule: Collector {
             } else {
                 diskStorage?.delete(completion: nil)
             }
+            if let ecid = newValue?.experienceCloudID, ecid != onECIDUpdate.last() {
+                onECIDUpdate.publish(ecid)
+            }
         }
     }
 
     var error: Error? {
         willSet {
             if let _ = error {
+                if visitor == nil {
+                    onECIDUpdate.publish(nil)
+                }
                 delegate?.requestDequeue(reason: AdobeVisitorModuleConstants.failureMessage)
             }
         }
@@ -193,6 +199,34 @@ public class TealiumAdobeVisitorModule: Collector {
         case .failure(let error):
             self.error = error
             // An error doesn't delete the previous visitor present as it's always valid for us
+        }
+    }
+}
+
+extension TealiumAdobeVisitorModule: QueryParameterProvider {
+
+    public func provideParameters(completion: @escaping ([URLQueryItem]) -> Void) {
+        TealiumQueues.backgroundSerialQueue.async {
+            self.onECIDUpdate.subscribeOnce { [weak self] ecid in
+                guard let self = self else { return }
+                completion(self.getQueryParams(ecid: ecid))
+            }
+        }
+    }
+
+    private func getQueryParams(ecid: String?) -> [URLQueryItem] {
+        guard let ecid = ecid,
+              let orgId = config.adobeVisitorOrgId else {
+            return []
+        }
+        typealias Query = AdobeQueryParamConstants
+        let timestamp = Date().unixTimeSeconds
+        return [URLQueryItem(name: Query.adobeMc, value: "\(Query.MCID)=\(ecid)|\(Query.MCORGID)=\(orgId)|\(Query.TS)=\(timestamp)")]
+    }
+
+    public func decorateUrl(_ url: URL, completion: @escaping (URL) -> Void) {
+        provideParameters { items in
+            completion(url.appendingQueryItems(items))
         }
     }
 }

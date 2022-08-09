@@ -6,6 +6,18 @@
 //
 
 import Foundation
+#if COCOAPODS
+import TealiumSwift
+#else
+import TealiumCore
+#endif
+
+enum AdobeQueryParamConstants {
+    static let adobeMc = "adobe_mc"
+    static let MCID = "MCID"
+    static let MCORGID = "MCORGID"
+    static let TS = "TS"
+}
 
 enum AdobeVisitorKeys: String, CaseIterable {
     case experienceCloudId = "d_mid"
