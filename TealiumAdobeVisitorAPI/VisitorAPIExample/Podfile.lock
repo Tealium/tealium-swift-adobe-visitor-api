@@ -1,31 +1,31 @@
 PODS:
-  - tealium-swift (2.6.5):
-    - tealium-swift/TealiumFull (= 2.6.5)
-  - tealium-swift/Core (2.6.5)
-  - tealium-swift/TealiumFull (2.6.5)
-  - TealiumAdobeVisitorAPI (1.0.0):
-    - tealium-swift/Core (~> 2.1)
+  - tealium-swift (2.7.0):
+    - tealium-swift/TealiumFull (= 2.7.0)
+  - tealium-swift/Core (2.7.0)
+  - tealium-swift/TealiumFull (2.7.0)
+  - TealiumAdobeVisitorAPI (1.1.0):
+    - tealium-swift/Core (~> 2.6)
 
 DEPENDENCIES:
-  - tealium-swift (from `https://github.com/Tealium/tealium-swift.git`, branch `mt-1086`)
+  - tealium-swift (from `https://github.com/Tealium/tealium-swift.git`, branch `mt-1086bis`)
   - TealiumAdobeVisitorAPI (from `../../`)
 
 EXTERNAL SOURCES:
   tealium-swift:
-    :branch: mt-1086
+    :branch: mt-1086bis
     :git: https://github.com/Tealium/tealium-swift.git
   TealiumAdobeVisitorAPI:
     :path: "../../"
 
 CHECKOUT OPTIONS:
   tealium-swift:
-    :commit: 2cfc6e1c5022fb72ef331f16b2801ee44f91e063
+    :commit: a2db5f7f7c7ff79df7d080c2d38337d3cc71fb71
     :git: https://github.com/Tealium/tealium-swift.git
 
 SPEC CHECKSUMS:
-  tealium-swift: 1e06aa9071e84086360d407dc4687906dd759542
-  TealiumAdobeVisitorAPI: e85ccdca1190fd8289ea9151c18e7956fa0b6a78
+  tealium-swift: da6605540fc647f795932de24a17e031f73ae943
+  TealiumAdobeVisitorAPI: 00903f673a5330a3df94f300446093cc47718007
 
-PODFILE CHECKSUM: 8e17971153ca5ae32a55a5afbca3ea7960c4cab5
+PODFILE CHECKSUM: ca19bffdbc7fd9b52449da1fdc801a68395e2d84
 
 COCOAPODS: 1.11.2
