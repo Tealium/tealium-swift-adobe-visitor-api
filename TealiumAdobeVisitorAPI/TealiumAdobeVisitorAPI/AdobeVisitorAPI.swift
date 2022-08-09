@@ -32,7 +32,7 @@ protocol AdobeExperienceCloudIDService: AnyObject {
 
 
 class AdobeVisitorAPI: AdobeExperienceCloudIDService {
-
+    // Only updated from the outside!
     var visitor: AdobeVisitor?
     var networkSession: NetworkSession
     var adobeOrgId: String
@@ -174,8 +174,6 @@ class AdobeVisitorAPI: AdobeExperienceCloudIDService {
     func getNewECID(completion: @escaping AdobeVisitorCompletion) {
         guard let url = getNewUserAdobeIdURL() else { return }
         sendRequest(url: url) { result in
-            // attempt to store current state in memory
-            self.visitor = try? result.get()
             completion(result)
         }
     }
@@ -193,8 +191,6 @@ class AdobeVisitorAPI: AdobeExperienceCloudIDService {
                      completion: @escaping AdobeVisitorCompletion) {
         guard let url = getNewUserAdobeIdURL(existingECID: existingECID) else { return }
         sendRequest(url: url) { result in
-            // attempt to store current state in memory
-            self.visitor = try? result.get()
             completion(result)
         }
     }

@@ -192,6 +192,7 @@ public class TealiumAdobeVisitorModule: Collector {
             self.visitor = visitor
         case .failure(let error):
             self.error = error
+            // An error doesn't delete the previous visitor present as it's always valid for us
         }
     }
 }
