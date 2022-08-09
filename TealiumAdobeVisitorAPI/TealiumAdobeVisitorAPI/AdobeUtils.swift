@@ -6,6 +6,11 @@
 //
 
 import Foundation
+#if COCOAPODS
+import TealiumSwift
+#else
+import TealiumCore
+#endif
 
 typealias NetworkResult = Result<(URLResponse, Data), Error>
 
@@ -14,16 +19,18 @@ extension URLSession: NetworkSession {
                          completionHandler: @escaping (NetworkResult) -> Void) {
 
         let task = dataTask(with: request) { data, urlResponse, error in
-            if let error = error {
-                completionHandler(.failure(error))
-            } else {
-                guard let urlResponse = urlResponse,
-                      let data = data else {
-                    let error = NSError(domain: "error", code: 0, userInfo: nil)
+            TealiumQueues.backgroundSerialQueue.async {
+                if let error = error {
                     completionHandler(.failure(error))
-                    return
+                } else {
+                    guard let urlResponse = urlResponse,
+                          let data = data else {
+                        let error = NSError(domain: "error", code: 0, userInfo: nil)
+                        completionHandler(.failure(error))
+                        return
+                    }
+                    completionHandler(.success((urlResponse, data)))
                 }
-                completionHandler(.success((urlResponse, data)))
             }
         }
 

@@ -31,7 +31,7 @@ public class TealiumAdobeVisitorModule: Collector {
         }
     }
 
-    public var visitor: AdobeVisitor? {
+    public var visitor: AdobeVisitor? { // Always changed from the TealiumQueues.backgroundSerialQueue
         willSet {
             visitorAPI?.visitor = newValue
             if let newValue = newValue {
@@ -43,10 +43,11 @@ public class TealiumAdobeVisitorModule: Collector {
         }
     }
 
-
     var error: Error? {
         willSet {
-            delegate?.requestDequeue(reason: AdobeVisitorModuleConstants.failureMessage)
+            if let _ = error {
+                delegate?.requestDequeue(reason: AdobeVisitorModuleConstants.failureMessage)
+            }
         }
     }
 
@@ -177,14 +178,17 @@ public class TealiumAdobeVisitorModule: Collector {
     ///    - completion: `AdobeVisitorCompletion` Optional completion block to be called when a response has been received from the Adobe Visitor API
     ///     - result: `Result<AdobeVisitor, Error>` Result type to receive a valid Adobe Visitor or an error
     func resetECID(completion: AdobeVisitorCompletion? = nil) {
-        self.visitor = nil
-        visitorAPI?.resetNetworkSession()
-        getECID(completion: completion)
+        TealiumQueues.backgroundSerialQueue.async {
+            self.visitor = nil
+            self.visitorAPI?.resetNetworkSession()
+            self.getECID(completion: completion)
+        }
     }
     
     private func completeCall(result: AdobeResult) {
         switch result {
         case .success(let visitor):
+            self.error = nil
             self.visitor = visitor
         case .failure(let error):
             self.error = error
@@ -197,10 +201,10 @@ extension TealiumAdobeVisitorModule: DispatchValidator {
         guard let _ = config.adobeVisitorOrgId else {
             return (false, [AdobeVisitorModuleKeys.error: AdobeVisitorModuleConstants.missingOrgId])
         }
-        if let error = error {
-            return (false, [AdobeVisitorModuleKeys.error: "Unrecoverable error: \(error.localizedDescription)"])
-        }
         guard let data = self.data else {
+            if let error = error {
+                return (false, [AdobeVisitorModuleKeys.error: "Unrecoverable error: \(error.localizedDescription)"])
+            }
             return (true, [TealiumDataKey.queueReason: AdobeVisitorError.missingExperienceCloudID.localizedDescription])
         }
         return (false, data)
