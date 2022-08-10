@@ -6,11 +6,13 @@
 //
 
 import SwiftUI
+import Combine
 import TealiumSwift
 
 struct ContentView: View {
     
     @ObservedObject var updater = Updater()
+    @ObservedObject var helper = TealiumHelper.shared
     @State var orgID = ""
     @State var knownId = ""
     @State var initDisabled = true
@@ -28,20 +30,20 @@ struct ContentView: View {
                 }).font(.custom("HelveticaNeue", size: 10.0)).multilineTextAlignment(.center).textFieldStyle(RoundedBorderTextFieldStyle())
                 
                 Button("Initialize Tealium", action: {
-                    TealiumHelper.start(orgId: orgID, knownId: knownId.nonEmpty(), existingECID: updater.ecid)
+                    helper.start(orgId: orgID, knownId: knownId.nonEmpty(), existingECID: updater.ecid)
                 }).disabled(initDisabled)
                 
                 Button("Track Event", action: {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                        TealiumHelper.trackEvent(title: "Sample Event", data: nil)
+                        helper.trackEvent(title: "Sample Event", data: nil)
                     }
                 }).frame(maxWidth: .infinity, alignment: .center).disabled(initDisabled)
                 
                 
                 Button("Reset ECID", action: {
-                    TealiumHelper.resetECID()
+                    helper.resetECID()
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                        TealiumHelper.trackEvent(title: "ECID Reset", data: nil)
+                        helper.trackEvent(title: "ECID Reset", data: nil)
                     }
                 }).frame(maxWidth: .infinity, alignment: .center).disabled(initDisabled)
                 
@@ -53,23 +55,27 @@ struct ContentView: View {
                 
                 Button("Link Visitor ID", action: {
                     if (knownId != "") {
-                        TealiumHelper.linkToKnownId(id: knownId)
+                        helper.linkToKnownId(id: knownId)
                     }
                 }).disabled(linkDisabled)
-                
-                if TealiumHelper.tealium != nil {
-                    Text("Adobe ECID:\n \(updater.ecid ?? "Not available yet")")
-                        .multilineTextAlignment(.center).padding()
-                } else {
+                VStack(alignment: .center, spacing: 4) {
                     Text("Adobe ECID:")
-                    TextField("Enter Existing ECID", text: Binding<String>(get: {
-                        updater.ecid ?? ""
-                    }, set: { newValue in
-                        updater.ecid = newValue
-                    }), onCommit:  {
-                        
-                    }).font(.custom("HelveticaNeue", size: 10.0)).multilineTextAlignment(.center).textFieldStyle(RoundedBorderTextFieldStyle())
-                }
+                    if helper.tealium != nil {
+                        if let ecid = updater.ecid {
+                            Text(ecid)
+                        } else {
+                            ProgressView()
+                        }
+                    } else {
+                        TextField("Enter Existing ECID", text: Binding<String>(get: {
+                            updater.ecid ?? ""
+                        }, set: { newValue in
+                            updater.ecid = newValue
+                        }), onCommit:  {
+                            
+                        }).font(.custom("HelveticaNeue", size: 10.0)).multilineTextAlignment(.center).textFieldStyle(RoundedBorderTextFieldStyle())
+                    }
+                }.padding()
                 
             }
         }
@@ -79,16 +85,11 @@ struct ContentView: View {
 
 class Updater: ObservableObject {
     @Published var ecid: String?
-    
+    private var cancellable: Set<AnyCancellable> = []
     init() {
-        NotificationCenter.default.addObserver(forName: Notification.Name("ecid"), object: nil, queue: nil) { notification in
-            guard let ecid = notification.userInfo?["ecid"] as? String else {
-                return
-            }
-            DispatchQueue.main.async {
-                self.ecid = ecid
-            }
-        }
+        TealiumHelper.shared.$currentECID
+            .assign(to: \.ecid, on: self)
+            .store(in: &cancellable)
     }
 }
 

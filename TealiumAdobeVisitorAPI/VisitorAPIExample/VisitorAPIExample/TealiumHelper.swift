@@ -16,17 +16,20 @@ enum TealiumConfiguration {
     static let environment = "dev"
 }
 
-class TealiumHelper {
+class TealiumHelper: ObservableObject {
 
     static let shared = TealiumHelper()
     
-    static let config = TealiumConfig(account: TealiumConfiguration.account,
+    let config = TealiumConfig(account: TealiumConfiguration.account,
         profile: TealiumConfiguration.profile,
         environment: TealiumConfiguration.environment)
 
-    static var tealium: Tealium?
+    @Published var tealium: Tealium?
+    @Published var currentECID: String?
     
-    public static func start(orgId: String?, knownId: String?, existingECID: String?) {
+    public func start(orgId: String?, knownId: String?, existingECID: String?) {
+        self.tealium = nil
+        self.currentECID = nil
         config.shouldUseRemotePublishSettings = false
         config.batchingEnabled = false
         config.remoteAPIEnabled = true
@@ -41,34 +44,34 @@ class TealiumHelper {
 
         config.adobeVisitorOrgId = orgId
         config.logLevel = .info
-        config.collectors = [Collectors.AdobeVisitor] //, Collectors.Lifecycle]
+        config.collectors = [Collectors.AdobeVisitor, Collectors.Lifecycle]
         config.dispatchers = [Dispatchers.TagManagement]
         config.dispatchListeners = [TealiumHelper.shared]
-        TealiumHelper.tealium = Tealium(config: config)
+        tealium = Tealium(config: config)
     }
     
     private init() {}
 
-    class func trackView(title: String, data: [String: Any]?) {
+    func trackView(title: String, data: [String: Any]?) {
         let tealiumView = TealiumView(title, dataLayer: data)
-        TealiumHelper.tealium?.track(tealiumView)
+        tealium?.track(tealiumView)
     }
 
-    class func trackEvent(title: String, data: [String: Any]?) {
+    func trackEvent(title: String, data: [String: Any]?) {
         let tealiumEvent = TealiumEvent(title, dataLayer: data)
-        TealiumHelper.tealium?.track(tealiumEvent)
+        tealium?.track(tealiumEvent)
     }
     
-    class func getECID() -> String? {
-        return TealiumHelper.tealium?.adobeVisitorApi?.visitor?.experienceCloudID
+    func getECID() -> String? {
+        return tealium?.adobeVisitorApi?.visitor?.experienceCloudID
     }
     
-    class func resetECID() {
-        TealiumHelper.tealium?.adobeVisitorApi?.resetVisitor()
+    func resetECID() {
+        tealium?.adobeVisitorApi?.resetVisitor()
     }
     
-    class func linkToKnownId(id: String) {
-        TealiumHelper.tealium?.adobeVisitorApi?.linkECIDToKnownIdentifier(id, adobeDataProviderId: "email", authState: .unknown)
+    func linkToKnownId(id: String) {
+        tealium?.adobeVisitorApi?.linkECIDToKnownIdentifier(id, adobeDataProviderId: "email", authState: .unknown)
     }
 
 }
@@ -79,8 +82,9 @@ extension TealiumHelper: DispatchListener {
               else {
             return
         }
-        let notification = Notification(name: Notification.Name("ecid"), object: nil, userInfo: ["ecid":ecid])
-        NotificationCenter.default.post(notification)
+        DispatchQueue.main.async {
+            self.currentECID = ecid
+        }
     }
     
     

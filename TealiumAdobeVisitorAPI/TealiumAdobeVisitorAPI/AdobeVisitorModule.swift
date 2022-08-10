@@ -186,6 +186,7 @@ public class TealiumAdobeVisitorModule: Collector {
     func resetECID(completion: AdobeVisitorCompletion? = nil) {
         TealiumQueues.backgroundSerialQueue.async {
             self.visitor = nil
+            self.onECIDUpdate.clear()
             self.visitorAPI?.resetNetworkSession()
             self.getECID(completion: completion)
         }
