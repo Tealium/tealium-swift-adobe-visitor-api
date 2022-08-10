@@ -234,14 +234,48 @@ class AdobeVisitorModuleTests: XCTestCase {
         let config = AdobeVisitorModuleTests.testConfig.copy
         let context = TealiumContext(config: config, dataLayer: AdobeVisitorModuleTests.dataLayer, tealium: AdobeVisitorModuleTests.tealium)
     
-        let module = TealiumAdobeVisitorModule(context: context, delegate: nil, diskStorage: MockAdobeVisitorDiskStoragePopulated(), adobeVisitorAPI: MockVisitorAPILinkFailure(expectation: nil, count: 5)) { _, _ in
+        let module = TealiumAdobeVisitorModule(context: context, delegate: nil, diskStorage: MockAdobeVisitorDiskStoragePopulated(), adobeVisitorAPI: MockVisitorAPILinkFailure(expectation: nil)) { _, _ in
             
         }
         
         XCTAssertEqual(module.visitor!.experienceCloudID, AdobeVisitorAPITestHelpers.ecID)
         
         module.resetECID()
-        XCTAssertNil(module.visitor)
+        TealiumQueues.backgroundSerialQueue.sync {
+            XCTAssertNil(module.visitor)
+        }
+    }
+    
+    func testProvideQueryParams() {
+        let config = AdobeVisitorModuleTests.testConfig.copy
+        let context = TealiumContext(config: config, dataLayer: AdobeVisitorModuleTests.dataLayer, tealium: AdobeVisitorModuleTests.tealium)
+    
+        let module = TealiumAdobeVisitorModule(context: context, delegate: nil, diskStorage: MockAdobeVisitorDiskStoragePopulated(), adobeVisitorAPI: MockVisitorAPILinkFailure(expectation: nil)) { _, _ in
+            
+        }
+        let expect = expectation(description: "get params")
+        module.provideParameters { params in
+            XCTAssertEqual(params.count, 1)
+            XCTAssertEqual(params[0].name, AdobeQueryParamConstants.adobeMc)
+            expect.fulfill()
+        }
+        waitForExpectations(timeout: 3)
+    }
+    
+    func testProvideQueryParamsErrors() {
+        let config = AdobeVisitorModuleTests.testConfig.copy
+        let context = TealiumContext(config: config, dataLayer: AdobeVisitorModuleTests.dataLayer, tealium: AdobeVisitorModuleTests.tealium)
+    
+        let module = TealiumAdobeVisitorModule(context: context, delegate: nil, diskStorage: MockAdobeVisitorDiskStoragePopulated(), adobeVisitorAPI: MockVisitorAPILinkFailure(expectation: nil)) { _, _ in
+            
+        }
+        module.resetECID()
+        let expect = expectation(description: "get params")
+        module.provideParameters { params in
+            XCTAssertEqual(params.count, 0)
+            expect.fulfill()
+        }
+        waitForExpectations(timeout: 3)
     }
 
 }
@@ -488,8 +522,7 @@ class MockVisitorAPILinkFailure: AdobeExperienceCloudIDService {
     var expectation: XCTestExpectation?
     var count: Int?
     
-    init(expectation: XCTestExpectation? = nil,
-         count: Int? = nil) {
+    init(expectation: XCTestExpectation? = nil) {
         if let count = count {
             self.count = count
         }
@@ -498,28 +531,23 @@ class MockVisitorAPILinkFailure: AdobeExperienceCloudIDService {
     
     func getNewECID(completion: @escaping AdobeVisitorCompletion) {
         getNewECIDCallCount += 1
-        if (getNewECIDCallCount == count) {
-            self.expectation?.fulfill()
-        }
+        self.expectation?.fulfill()
+        completion(.failure(AdobeVisitorError.invalidJSON))
     }
     
     func getNewECIDAndLink(customVisitorId: String, dataProviderId: String, authState: AdobeVisitorAuthState?, completion: AdobeVisitorCompletion?) {
         getNewECIDAndLinkCallCount += 1
-        if (getNewECIDAndLinkCallCount == count) {
-            self.expectation?.fulfill()
-        }
+        self.expectation?.fulfill()
     }
     
     func linkExistingECIDToKnownIdentifier(customVisitorId: String, dataProviderID: String, experienceCloudId: String, authState: AdobeVisitorAuthState?, completion: AdobeVisitorCompletion?) {
         linkExistingECIDToKnownIdentifierCallCount += 1
         completion?(.failure(AdobeVisitorError.invalidJSON))
-        if (linkExistingECIDToKnownIdentifierCallCount == count) {
-            self.expectation?.fulfill()
-        }
+        self.expectation?.fulfill()
     }
     
     func refreshECID(existingECID: String, completion: @escaping AdobeVisitorCompletion) {
-
+        completion(.failure(AdobeVisitorError.invalidJSON))
     }
 }
 

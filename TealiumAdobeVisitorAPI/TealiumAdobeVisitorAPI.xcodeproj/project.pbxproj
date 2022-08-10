@@ -513,7 +513,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Tealium/tealium-swift.git";
 			requirement = {
-				branch = "mt-1086";
+				branch = "mt-1086bis";
 				kind = branch;
 			};
 		};

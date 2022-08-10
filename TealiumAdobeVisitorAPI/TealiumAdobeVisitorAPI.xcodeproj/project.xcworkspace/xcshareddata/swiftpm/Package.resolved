@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/Tealium/tealium-swift.git",
       "state" : {
-        "branch" : "mt-1086",
-        "revision" : "2cfc6e1c5022fb72ef331f16b2801ee44f91e063"
+        "branch" : "mt-1086bis",
+        "revision" : "336fe435f67cbc79a61c189aabe36b6eac53820e"
       }
     }
   ],

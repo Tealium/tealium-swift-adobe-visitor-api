@@ -48,7 +48,7 @@ public class TealiumAdobeVisitorModule: Collector {
 
     var error: Error? {
         willSet {
-            if let _ = error {
+            if let _ = newValue {
                 if visitor == nil {
                     onECIDUpdate.publish(nil)
                 }
