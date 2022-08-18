@@ -34,7 +34,7 @@ Pod::Spec.new do |s|
     s.ios.source_files      = "TealiumAdobeVisitorAPI/*.{swift}"
 
     # ――― Dependencies ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
-    s.ios.dependency 'tealium-swift/Core', '~> 2.1'
+#    s.ios.dependency 'tealium-swift/Core', '~> 2.1'
 
 end
 

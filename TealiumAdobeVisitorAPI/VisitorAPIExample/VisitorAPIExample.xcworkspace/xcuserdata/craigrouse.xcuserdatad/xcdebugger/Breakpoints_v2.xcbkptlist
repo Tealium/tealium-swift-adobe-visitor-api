@@ -32,8 +32,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "79"
             endingLineNumber = "79"
-            landmarkName = "init(tealium:)"
-            landmarkType = "7">
+            landmarkName = "Tealium"
+            landmarkType = "21">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -48,7 +48,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "204"
             endingLineNumber = "204"
-            landmarkName = "linkECIDToKnownIdentifier(_:dataProviderId:authState:retries:completion:)"
+            landmarkName = "completeCall(result:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -64,8 +64,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "207"
             endingLineNumber = "207"
-            landmarkName = "linkECIDToKnownIdentifier(_:dataProviderId:authState:retries:completion:)"
-            landmarkType = "7">
+            landmarkName = "TealiumAdobeVisitorModule"
+            landmarkType = "21">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>
