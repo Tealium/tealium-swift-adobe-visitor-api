@@ -17,7 +17,7 @@ struct ContentView: View {
     @State var knownId = ""
     @State var initDisabled = true
     @State var linkDisabled = true
-    
+    @State var urlToDecorate = "https://www.example.com"
     var body: some View {
         ScrollView{
             VStack(spacing: 15) {
@@ -63,6 +63,7 @@ struct ContentView: View {
                     if helper.tealium != nil {
                         if let ecid = updater.ecid {
                             Text(ecid)
+                                .font(.custom("HelveticaNeue", size: 10.0))
                         } else {
                             ProgressView()
                         }
@@ -73,10 +74,25 @@ struct ContentView: View {
                             updater.ecid = newValue
                         }), onCommit:  {
                             
-                        }).font(.custom("HelveticaNeue", size: 10.0)).multilineTextAlignment(.center).textFieldStyle(RoundedBorderTextFieldStyle())
+                        }).font(.custom("HelveticaNeue", size: 10.0))
+                            .multilineTextAlignment(.center)
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
                     }
-                }.padding()
-                
+                    Button {
+                        guard let url = URL(string: urlToDecorate) else { return }
+                        helper.tealium?.adobeVisitorApi?.decorateUrl(url, completion: { newUrl in
+                            DispatchQueue.main.async {
+                                self.urlToDecorate = newUrl.absoluteString
+                            }
+                        })
+                    } label: {
+                        Text("Decorate URL")
+                    }.padding(.top)
+                    TextField("url", text: $urlToDecorate)
+                        .lineLimit(2)
+                        .multilineTextAlignment(.center)
+                        .font(.custom("HelveticaNeue", size: 10.0)).multilineTextAlignment(.center).textFieldStyle(RoundedBorderTextFieldStyle())
+                }.padding(.vertical)
             }
         }
 
