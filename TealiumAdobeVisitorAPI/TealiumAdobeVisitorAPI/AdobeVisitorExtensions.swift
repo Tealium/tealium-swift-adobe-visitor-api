@@ -68,7 +68,7 @@ public extension Tealium {
         ///    - completion: `AdobeVisitorCompletion` Optional completion block to be called when a response has been received from the Adobe Visitor API
         ///         - result: `Result<AdobeVisitor, Error>` Result type to receive a valid Adobe Visitor or an error
         public func resetVisitor(completion: AdobeVisitorCompletion? = nil) {
-            module?.resetECID()
+            module?.resetECID(completion: completion)
         }
 
         

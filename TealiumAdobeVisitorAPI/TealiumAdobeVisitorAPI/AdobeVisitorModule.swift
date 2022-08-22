@@ -183,7 +183,7 @@ public class TealiumAdobeVisitorModule: Collector {
     /// Resets the Adobe Experience Cloud ID. A new ID will be requested immediately
     ///    - completion: `AdobeVisitorCompletion` Optional completion block to be called when a response has been received from the Adobe Visitor API
     ///     - result: `Result<AdobeVisitor, Error>` Result type to receive a valid Adobe Visitor or an error
-    func resetECID(completion: AdobeVisitorCompletion? = nil) {
+    func resetECID(completion: AdobeVisitorCompletion?) {
         TealiumQueues.backgroundSerialQueue.async {
             self.visitor = nil
             self.onECIDUpdate.clear()

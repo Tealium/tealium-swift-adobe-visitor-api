@@ -240,7 +240,7 @@ class AdobeVisitorModuleTests: XCTestCase {
         
         XCTAssertEqual(module.visitor!.experienceCloudID, AdobeVisitorAPITestHelpers.ecID)
         
-        module.resetECID()
+        module.resetECID(completion: nil)
         TealiumQueues.backgroundSerialQueue.sync {
             XCTAssertNil(module.visitor)
         }
@@ -269,7 +269,7 @@ class AdobeVisitorModuleTests: XCTestCase {
         let module = TealiumAdobeVisitorModule(context: context, delegate: nil, diskStorage: MockAdobeVisitorDiskStoragePopulated(), adobeVisitorAPI: MockVisitorAPILinkFailure(expectation: nil)) { _, _ in
             
         }
-        module.resetECID()
+        module.resetECID(completion: nil)
         let expect = expectation(description: "get params")
         module.provideParameters { params in
             XCTAssertEqual(params.count, 0)
