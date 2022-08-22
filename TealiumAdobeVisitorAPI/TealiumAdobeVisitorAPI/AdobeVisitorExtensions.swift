@@ -73,10 +73,10 @@ public extension Tealium {
         
         /// Decorates the provided URL with the query params for the Adobe ECID
         ///
-        /// This method waits for ongoing ECID fetches before decorating the url with the latests value.
+        /// This method waits for ongoing ECID fetches before decorating the url with the latest value.
         ///
         /// - Parameters:
-        ///     - url: The url to decorat
+        ///     - url: The url to decorate
         ///     - completion: The block that will be called at end of the decoration process
         ///         - result: The URL after the decoration process, or the input URL if no parameter has been added
         public func decorateUrl(_ url: URL, completion: @escaping (URL) -> Void) {
