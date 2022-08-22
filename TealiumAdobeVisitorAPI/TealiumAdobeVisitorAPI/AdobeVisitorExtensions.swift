@@ -70,6 +70,20 @@ public extension Tealium {
         public func resetVisitor(completion: AdobeVisitorCompletion? = nil) {
             module?.resetECID(completion: completion)
         }
+        
+        /// Decorates the provided URL with the query params for the Adobe ECID
+        ///
+        /// This method waits for ongoing ECID fetches before decorating the url with the latests value.
+        ///
+        /// - Parameters:
+        ///     - url: The url to decorat
+        ///     - completion: The block that will be called at end of the decoration process
+        ///         - result: The URL after the decoration process, or the input URL if no parameter has been added
+        public func decorateUrl(_ url: URL, completion: @escaping (URL) -> Void) {
+            module?.provideParameters { items in
+                completion(url.appendingQueryItems(items))
+            }
+        }
 
         
         init(tealium: Tealium) {

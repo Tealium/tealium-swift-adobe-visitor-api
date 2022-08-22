@@ -224,12 +224,6 @@ extension TealiumAdobeVisitorModule: QueryParameterProvider {
         let timestamp = Date().unixTimeSeconds
         return [URLQueryItem(name: Query.adobeMc, value: "\(Query.MCID)=\(ecid)|\(Query.MCORGID)=\(orgId)|\(Query.TS)=\(timestamp)")]
     }
-
-    public func decorateUrl(_ url: URL, completion: @escaping (URL) -> Void) {
-        provideParameters { items in
-            completion(url.appendingQueryItems(items))
-        }
-    }
 }
 
 extension TealiumAdobeVisitorModule: DispatchValidator {
