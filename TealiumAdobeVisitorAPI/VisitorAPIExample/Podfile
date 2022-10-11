@@ -6,7 +6,6 @@ target 'VisitorAPIExample' do
   use_frameworks!
 
   # Pods for VisitorAPIExample
-pod 'tealium-swift', :git => 'https://github.com/Tealium/tealium-swift.git', :branch => 'mt-1086bis'
 pod 'TealiumAdobeVisitorAPI', :path => '../../'
 
 end

@@ -12,7 +12,7 @@ let package = Package(
             targets: ["TealiumAdobeVisitorAPI"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/Tealium/tealium-swift", from: "2.0.0")
+        .package(url: "https://github.com/Tealium/tealium-swift", .upToNextMajor(from: "2.8.0"))
     ],
     targets: [
         .target(

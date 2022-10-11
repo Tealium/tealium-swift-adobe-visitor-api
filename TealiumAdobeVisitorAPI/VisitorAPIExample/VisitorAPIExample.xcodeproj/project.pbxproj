@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		06C0668E11F4DC57B4CDCB19 /* Pods_VisitorAPIExample.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 36E88549E9373CBF2EEACA3B /* Pods_VisitorAPIExample.framework */; };
 		D709E3E925CAEB5B003FBE61 /* TealiumHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = D709E3E825CAEB5B003FBE61 /* TealiumHelper.swift */; };
 		D7E5098525C96B4700C7F758 /* VisitorAPIExampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7E5098425C96B4700C7F758 /* VisitorAPIExampleApp.swift */; };
 		D7E5098725C96B4700C7F758 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7E5098625C96B4700C7F758 /* ContentView.swift */; };
@@ -28,6 +29,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		36E88549E9373CBF2EEACA3B /* Pods_VisitorAPIExample.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_VisitorAPIExample.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		757B5B72B4E78EA92A88127B /* Pods-VisitorAPIExample.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VisitorAPIExample.debug.xcconfig"; path = "Target Support Files/Pods-VisitorAPIExample/Pods-VisitorAPIExample.debug.xcconfig"; sourceTree = "<group>"; };
+		D1379D99F8CB23E4A09A4387 /* Pods-VisitorAPIExample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VisitorAPIExample.release.xcconfig"; path = "Target Support Files/Pods-VisitorAPIExample/Pods-VisitorAPIExample.release.xcconfig"; sourceTree = "<group>"; };
 		D709E3E825CAEB5B003FBE61 /* TealiumHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TealiumHelper.swift; sourceTree = "<group>"; };
 		D7E5098125C96B4700C7F758 /* VisitorAPIExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VisitorAPIExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D7E5098425C96B4700C7F758 /* VisitorAPIExampleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisitorAPIExampleApp.swift; sourceTree = "<group>"; };
@@ -42,6 +46,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				06C0668E11F4DC57B4CDCB19 /* Pods_VisitorAPIExample.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -51,8 +56,18 @@
 		3CBE19A7721A4623E9B22937 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
+				757B5B72B4E78EA92A88127B /* Pods-VisitorAPIExample.debug.xcconfig */,
+				D1379D99F8CB23E4A09A4387 /* Pods-VisitorAPIExample.release.xcconfig */,
 			);
 			path = Pods;
+			sourceTree = "<group>";
+		};
+		AE7DB9B1BEFF24158AC2D700 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				36E88549E9373CBF2EEACA3B /* Pods_VisitorAPIExample.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		D7E5097825C96B4700C7F758 = {
@@ -61,6 +76,7 @@
 				D7E5098325C96B4700C7F758 /* VisitorAPIExample */,
 				D7E5098225C96B4700C7F758 /* Products */,
 				3CBE19A7721A4623E9B22937 /* Pods */,
+				AE7DB9B1BEFF24158AC2D700 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -100,10 +116,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = D7E5099025C96B4A00C7F758 /* Build configuration list for PBXNativeTarget "VisitorAPIExample" */;
 			buildPhases = (
+				C82A0053BEC3F0270C038C95 /* [CP] Check Pods Manifest.lock */,
 				D7E5097D25C96B4700C7F758 /* Sources */,
 				D7E5097E25C96B4700C7F758 /* Frameworks */,
 				D7E5097F25C96B4700C7F758 /* Resources */,
 				D7A3ECAE25C972BB0007DFB4 /* Embed Frameworks */,
+				21353041A47F4C85FF3FCBC7 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -157,6 +175,48 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		21353041A47F4C85FF3FCBC7 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-VisitorAPIExample/Pods-VisitorAPIExample-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-VisitorAPIExample/Pods-VisitorAPIExample-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-VisitorAPIExample/Pods-VisitorAPIExample-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		C82A0053BEC3F0270C038C95 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-VisitorAPIExample-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		D7E5097D25C96B4700C7F758 /* Sources */ = {
@@ -290,6 +350,7 @@
 		};
 		D7E5099125C96B4A00C7F758 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 757B5B72B4E78EA92A88127B /* Pods-VisitorAPIExample.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -312,6 +373,7 @@
 		};
 		D7E5099225C96B4A00C7F758 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = D1379D99F8CB23E4A09A4387 /* Pods-VisitorAPIExample.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;

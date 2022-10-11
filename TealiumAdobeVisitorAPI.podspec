@@ -22,10 +22,6 @@ Pod::Spec.new do |s|
     s.swift_version = "5.0"
     s.platform     = :ios, "11.0"
 
-    # ――― Excluded Archs ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
-    s.user_target_xcconfig = { 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64' }
-    s.pod_target_xcconfig = { 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64' }    
-
     # ――― Source Location ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
     s.source       = { :git => "https://github.com/Tealium/tealium-ios-adobe-visitor-api.git", :tag => "#{s.version}" }
     # s.source = { :git => "https://github.com/Tealium/tealium-ios-adobe-visitor-api.git", :branch => "main"}
@@ -34,7 +30,7 @@ Pod::Spec.new do |s|
     s.ios.source_files      = "TealiumAdobeVisitorAPI/TealiumAdobeVisitorAPI/*.{swift}"
 
     # ――― Dependencies ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
-    s.ios.dependency 'tealium-swift/Core', '~> 2.6'
+    s.ios.dependency 'tealium-swift/Core', '~> 2.8'
 
 end
 
