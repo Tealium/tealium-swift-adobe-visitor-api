@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		D77C15662625E70100FF241A /* TealiumCore in Frameworks */ = {isa = PBXBuildFile; productRef = D77C15652625E70100FF241A /* TealiumCore */; };
+		157F784D28F6CB5500FCA15E /* TealiumCore.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 157F784C28F6CB5500FCA15E /* TealiumCore.xcframework */; };
 		D7F1356225C872760021A355 /* TealiumAdobeVisitorAPI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D7F1355825C872750021A355 /* TealiumAdobeVisitorAPI.framework */; };
 		D7F1356725C872760021A355 /* TealiumAdobeVisitorAPITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7F1356625C872760021A355 /* TealiumAdobeVisitorAPITests.swift */; };
 		D7F1357B25C875280021A355 /* AdobeUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7F1357525C875280021A355 /* AdobeUtils.swift */; };
@@ -30,6 +30,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		157F784C28F6CB5500FCA15E /* TealiumCore.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = TealiumCore.xcframework; path = Carthage/Build/TealiumCore.xcframework; sourceTree = "<group>"; };
 		D7F1355825C872750021A355 /* TealiumAdobeVisitorAPI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = TealiumAdobeVisitorAPI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D7F1355C25C872750021A355 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D7F1356125C872760021A355 /* TealiumAdobeVisitorAPITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TealiumAdobeVisitorAPITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -49,7 +50,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D77C15662625E70100FF241A /* TealiumCore in Frameworks */,
+				157F784D28F6CB5500FCA15E /* TealiumCore.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -110,6 +111,7 @@
 		D7F135B625C95DCC0021A355 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				157F784C28F6CB5500FCA15E /* TealiumCore.xcframework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -142,7 +144,6 @@
 			);
 			name = TealiumAdobeVisitorAPI;
 			packageProductDependencies = (
-				D77C15652625E70100FF241A /* TealiumCore */,
 			);
 			productName = TealiumAdobeVisitorAPI;
 			productReference = D7F1355825C872750021A355 /* TealiumAdobeVisitorAPI.framework */;
@@ -194,7 +195,6 @@
 			);
 			mainGroup = D7F1354E25C872750021A355;
 			packageReferences = (
-				D77C15642625E70100FF241A /* XCRemoteSwiftPackageReference "tealium-swift" */,
 			);
 			productRefGroup = D7F1355925C872750021A355 /* Products */;
 			projectDirPath = "";
@@ -507,25 +507,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		D77C15642625E70100FF241A /* XCRemoteSwiftPackageReference "tealium-swift" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/Tealium/tealium-swift.git";
-			requirement = {
-				branch = "mt-1086bis";
-				kind = branch;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		D77C15652625E70100FF241A /* TealiumCore */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = D77C15642625E70100FF241A /* XCRemoteSwiftPackageReference "tealium-swift" */;
-			productName = TealiumCore;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = D7F1354F25C872750021A355 /* Project object */;
 }

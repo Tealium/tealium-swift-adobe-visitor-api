@@ -18,7 +18,7 @@ let package = Package(
         .target(
             name: "TealiumAdobeVisitorAPI",
             dependencies: ["TealiumCore"],
-            path: "TealiumAdobeVisitorAPI/TealiumAdobeVisitorAPI/"
+            path: "TealiumAdobeVisitorAPI/"
         ),
     ]
 )
