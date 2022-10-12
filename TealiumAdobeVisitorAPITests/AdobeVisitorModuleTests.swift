@@ -17,9 +17,13 @@ class AdobeVisitorModuleTests: XCTestCase {
     var mockVisitorAPISuccess = AdobeVisitorAPI(networkSession: MockNetworkSessionVisitorSuccess(), retryManager: retryManager, adobeOrgId: AdobeVisitorAPITestHelpers.adobeOrgId)
     var mockVisitorAPISuccessEmptyECID = AdobeVisitorAPI(networkSession: MockNetworkSessionVisitorSuccessEmptyECID(), retryManager: retryManager, adobeOrgId: AdobeVisitorAPITestHelpers.adobeOrgId)
     var mockVisitorAPIFailure = AdobeVisitorAPI(networkSession: MockNetworkSessionVisitorFailure(), retryManager: retryManager, adobeOrgId: AdobeVisitorAPITestHelpers.adobeOrgId)
+    
+    // count added to avoid crashes on shared tealium instances
+    static var count = 0
     static var testConfig: TealiumConfig {
         get {
-            let config = TealiumConfig(account: "tealiummobile", profile: "demo", environment: "dev")
+            count += 1
+            let config = TealiumConfig(account: "tealiummobile\(count)", profile: "demo", environment: "dev")
             config.collectors = []
             config.adobeVisitorOrgId = AdobeVisitorAPITestHelpers.adobeOrgId
             config.dispatchers = []
@@ -29,7 +33,8 @@ class AdobeVisitorModuleTests: XCTestCase {
     
     static var testConfigNoOrgId: TealiumConfig {
         get {
-            let config = TealiumConfig(account: "tealiummobile", profile: "demo", environment: "dev")
+            count += 1
+            let config = TealiumConfig(account: "tealiummobile\(count)", profile: "demo", environment: "dev")
             config.collectors = []
             config.dispatchers = []
             return config
