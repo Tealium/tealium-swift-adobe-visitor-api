@@ -49,3 +49,27 @@ Thumbs.db
 *.wmv
 
 Pods/
+
+.build/
+*.DS_Store*
+*.xcuserstate
+*.xcbkptlist
+tealium/tealium_debug/Swifter
+*.xcuserdatad*
+carthage/
+Carthage/
+*carthage/
+*Carthage/
+Cartfile.resolved
+.idea
+Pods/
+build/
+.swiftpm/*
+tealium-xcframeworks/
+builder/tealium-xcframeworks/
+builder/tealium-xcframeworks.zip
+build/
+builder/build/
+veracode/
+builder/veracode/
+
