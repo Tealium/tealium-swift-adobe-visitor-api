@@ -84,6 +84,17 @@ public extension Tealium {
                 completion(url.appendingQueryItems(items))
             }
         }
+        
+        /// Retrieves the raw `adobe_mc` query parameter. For use in non-standard URL formats, such as those in Angular.
+        /// Upon retrieval, the caller should add these parameters to their URL query string.
+        /// - Parameters:
+        ///     - completion: The block that will be called once the query parameter(s) have been retrieved
+        ///         - result: `[URLQueryItem]` to be appended to the URL
+        public func getURLParams(completion: @escaping ([URLQueryItem]) -> Void) {
+            module?.provideParameters { items in
+                completion(items)
+            }
+        }
 
         
         init(tealium: Tealium) {
