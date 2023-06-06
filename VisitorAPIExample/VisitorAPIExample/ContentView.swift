@@ -96,7 +96,7 @@ struct ContentView: View {
                     Button {
                         helper.tealium?.adobeVisitorApi?.getURLParams(completion: { params in
                             DispatchQueue.main.async {
-                                self.params = params.debugDescription
+                                self.params = params ?? ""
                             }
                         })
                     } label: {
