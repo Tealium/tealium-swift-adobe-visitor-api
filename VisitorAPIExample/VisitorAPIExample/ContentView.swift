@@ -18,6 +18,7 @@ struct ContentView: View {
     @State var initDisabled = true
     @State var linkDisabled = true
     @State var urlToDecorate = "https://www.example.com"
+    @State var params = ""
     var body: some View {
         ScrollView{
             VStack(spacing: 15) {
@@ -89,6 +90,19 @@ struct ContentView: View {
                         Text("Decorate URL")
                     }.padding(.top)
                     TextField("url", text: $urlToDecorate)
+                        .lineLimit(2)
+                        .multilineTextAlignment(.center)
+                        .font(.custom("HelveticaNeue", size: 10.0)).multilineTextAlignment(.center).textFieldStyle(RoundedBorderTextFieldStyle())
+                    Button {
+                        helper.tealium?.adobeVisitorApi?.getURLParams(completion: { params in
+                            DispatchQueue.main.async {
+                                self.params = params.debugDescription
+                            }
+                        })
+                    } label: {
+                        Text("Retrieve Query Params")
+                    }.padding(.top)
+                    TextField("url", text: $params)
                         .lineLimit(2)
                         .multilineTextAlignment(.center)
                         .font(.custom("HelveticaNeue", size: 10.0)).multilineTextAlignment(.center).textFieldStyle(RoundedBorderTextFieldStyle())
