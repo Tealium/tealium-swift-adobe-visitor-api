@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
     # ―――  Spec Metadata  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
     s.name         = "TealiumAdobeVisitorAPI"
     s.module_name  = "TealiumAdobeVisitorAPI"
-    s.version      = "1.1.0"
+    s.version      = "1.1.1"
     s.summary      = "Tealium Swift Adobe Visitor API integration"
     s.description  = <<-DESC
     Tealium Swift Adobe Visitor API integration.
