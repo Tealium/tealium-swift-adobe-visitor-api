@@ -94,9 +94,9 @@ struct ContentView: View {
                         .multilineTextAlignment(.center)
                         .font(.custom("HelveticaNeue", size: 10.0)).multilineTextAlignment(.center).textFieldStyle(RoundedBorderTextFieldStyle())
                     Button {
-                        helper.tealium?.adobeVisitorApi?.getURLParams(completion: { params in
+                        helper.tealium?.adobeVisitorApi?.getURLParameters(completion: { params in
                             DispatchQueue.main.async {
-                                self.params = params ?? ""
+                                self.params = params?.description ?? ""
                             }
                         })
                     } label: {

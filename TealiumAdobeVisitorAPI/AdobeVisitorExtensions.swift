@@ -89,10 +89,10 @@ public extension Tealium {
         /// Upon retrieval, the caller should add these parameters to their URL query string.
         /// - Parameters:
         ///     - completion: The block that will be called once the query parameter(s) have been retrieved
-        ///         - result: `String?` containing the query string to be appended to the URL.
-        public func getURLParams(completion: @escaping (String?) -> Void) {
+        ///         - result: `URLQueryItem?` containing the query item to be appended to the URL. 
+        public func getURLParameters(completion: @escaping (URLQueryItem?) -> Void) {
             module?.provideParameters { items in
-                completion(items.first?.description)
+                completion(items.first)
             }
         }
 
