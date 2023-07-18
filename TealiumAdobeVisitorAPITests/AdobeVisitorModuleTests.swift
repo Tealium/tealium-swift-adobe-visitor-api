@@ -256,7 +256,15 @@ class AdobeVisitorModuleTests: XCTestCase {
         let expect = expectation(description: "get params")
         module.provideParameters { params in
             XCTAssertEqual(params.count, 1)
-            XCTAssertEqual(params[0].name, AdobeQueryParamConstants.adobeMc)
+            XCTAssertEqual(params[0].name, "adobe_mc")
+            guard let params = params[0].value?.split(separator: "|") else {
+                XCTFail()
+                return
+            }
+            XCTAssertEqual(params.count,3)
+            XCTAssertEqual(params[0], "MCMID=12345")
+            XCTAssertEqual(params[1], "MCORGID=ABC123@AdobeOrg")
+            XCTAssertTrue(params[2].starts(with: "TS=") == true, "TS missing, or was not the third parameter")
             expect.fulfill()
         }
         waitForExpectations(timeout: 3)

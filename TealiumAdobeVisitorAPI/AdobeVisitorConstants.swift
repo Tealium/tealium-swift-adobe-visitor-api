@@ -14,7 +14,7 @@ import TealiumCore
 
 enum AdobeQueryParamConstants {
     static let adobeMc = "adobe_mc"
-    static let MCID = "MCID"
+    static let MCID = "MCMID"
     static let MCORGID = "MCORGID"
     static let TS = "TS"
 }
