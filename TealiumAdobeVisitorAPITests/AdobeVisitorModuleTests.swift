@@ -261,9 +261,9 @@ class AdobeVisitorModuleTests: XCTestCase {
                 XCTFail()
                 return
             }
-            XCTAssertTrue(params.count == 3, "Too few items in adobe_mc parameter. Expected 3, got \(params.count)")
-            XCTAssertTrue(params.first?.starts(with: "MCMID=12345") == true, "MCMID missing, had an incorrect value, or was not the first parameter")
-            XCTAssertTrue(params[1].starts(with: "MCORGID=ABC123@AdobeOrg") == true, "MCORGID missing, had an incorrect value, or was not the second parameter")
+            XCTAssertEqual(params.count,3)
+            XCTAssertEqual(params[0], "MCMID=12345")
+            XCTAssertEqual(params[1], "MCORGID=ABC123@AdobeOrg")
             XCTAssertTrue(params[2].starts(with: "TS=") == true, "TS missing, or was not the third parameter")
             expect.fulfill()
         }
