@@ -26,7 +26,5 @@ done
 
 zip_xcframeworks
 
-mv "${ZIP_PATH}" "../"
-
 echo ""
 echo "Done! Upload ${ZIP_PATH} to GitHub when you create the release."
