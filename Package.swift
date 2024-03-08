@@ -4,7 +4,7 @@ import PackageDescription
 
 let package = Package(
     name: "TealiumAdobeVisitorAPI",
-    platforms: [ .iOS(.v9), .macOS(.v10_11), .tvOS(.v9), .watchOS(.v3) ],
+    platforms: [ .iOS(.v12), .macOS(.v10_14), .tvOS(.v12), .watchOS(.v4) ],
     products: [
         .library(
             name: "TealiumAdobeVisitorAPI",
@@ -12,7 +12,7 @@ let package = Package(
             targets: ["TealiumAdobeVisitorAPI"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/Tealium/tealium-swift", .upToNextMajor(from: "2.8.0"))
+        .package(url: "https://github.com/Tealium/tealium-swift", .upToNextMajor(from: "2.12.0"))
     ],
     targets: [
         .target(
